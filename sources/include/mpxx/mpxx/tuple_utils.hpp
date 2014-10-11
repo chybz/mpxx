@@ -28,7 +28,7 @@ namespace detail {
 
 template <std::size_t I, class Tuple, typename F, typename ...Args>
 struct for_each_impl {
-    static void for_each(const Tuple& t, F& f, Args&&... args)
+    static void for_each(Tuple&& t, F& f, Args&&... args)
     {
         for_each_impl<I - 1, Tuple, F, Args...>::for_each(
             t, f, std::forward<Args>(args)...
@@ -39,76 +39,92 @@ struct for_each_impl {
 
 template <class Tuple, typename F, typename... Args>
 struct for_each_impl<0, Tuple, F, Args...> {
-    static void for_each(const Tuple& t, F& f, Args&&... args)
+    static void for_each(Tuple&& t, F& f, Args&&... args)
     {
         f(0, std::get<0>(t), std::forward<Args>(args)...);
     }
 };
 
-template<std::size_t I, class Tuple, class Params, typename F>
-struct for_each_with_impl {
-    static void for_each_with(const Tuple& t, Params& p, const F& f) {
-        for_each_with_impl<I - 1, Tuple, Params, F>::for_each_with(t, p, f);
-        f(I, std::get<I>(t), std::get<I>(p));
-    }
+template <int Index, typename Search, typename First, typename... Types>
+struct get_impl
+{
+    typedef typename get_impl<Index + 1, Search, Types...>::type type;
+    static constexpr int index = Index;
 };
 
-template<class Tuple, class Params, typename F>
-struct for_each_with_impl<0, Tuple, Params, F> {
-    static void for_each_with(const Tuple& t, Params& p, const F& f) {
-        f(0, std::get<0>(t), std::get<0>(p));
-    }
-};
-
-template <size_t N>
-struct apply {
-    template <typename F, typename... ArgsT, typename... Args>
-    static inline auto apply_tuple(
-        const F& f,
-        std::tuple<ArgsT...>& t,
-        Args&... args
-    )
-    RETURNS(apply<N - 1>::apply_tuple(f, t, std::get<N - 1>(t), args...));
-};
-
-template <>
-struct apply<0> {
-    template <typename F, typename... ArgsT, typename... Args>
-    static inline auto apply_tuple(
-        const F& f,
-        std::tuple<ArgsT...>&,
-        Args&... args
-    )
-    RETURNS(f(args...));
+template <int Index, typename Search, typename... Types>
+struct get_impl<Index, Search, Search, Types...>
+{
+    typedef get_impl type;
+    static constexpr int index = Index;
 };
 
 } // namespace detail
 
 template<class Tuple, typename F, typename... Args>
-void for_each(const Tuple& t, F& f, Args&&... args)
+void for_each(Tuple&& t, F& f, Args&&... args)
 {
     detail::for_each_impl<
-        std::tuple_size<Tuple>::value - 1,
+        std::tuple_size<
+            typename std::decay<Tuple>::type
+        >::value - 1,
         Tuple, F, Args...
     >::for_each(t, f, std::forward<Args>(args)...);
 }
 
-template<class Tuple, class ParamsTuple, typename F>
-F
-for_each_with(const Tuple& t, ParamsTuple& p, const F& f)
-{
-    detail::for_each_with_impl<
-        std::tuple_size<Tuple>::value - 1,
-        Tuple, ParamsTuple, F
-    >::for_each_with(t, p, f);
+template <typename T, typename... Types>
+struct tuple_element;
 
-    return f;
+template <typename T, typename... Types, typename... Keys>
+struct tuple_element<T, std::tuple<Types...>, std::tuple<Keys...>>
+{
+    typedef typename std::tuple_element<
+        detail::get_impl<0, T, Keys...>::type::index,
+        std::tuple<Types...>
+    >::type type;
+};
+
+template <typename T, typename... Types>
+T& get(std::tuple<Types...>& tuple)
+{
+    return std::get<
+        detail::get_impl<0, T, Types...>::type::index
+    >(tuple);
 }
 
-template <typename F, typename... ArgsT>
-static inline
-auto apply_tuple(const F& f, std::tuple<ArgsT...>& t)
-RETURNS(detail::apply<sizeof...(ArgsT)>::apply_tuple(f, t));
+template <typename T, typename... Types>
+const T& get(const std::tuple<Types...>& tuple)
+{
+    return std::get<
+        detail::get_impl<0, T, Types...>::type::index
+    >(tuple);
+}
+
+template <typename T, typename... Types, typename... Keys>
+typename tuple_element<
+    T,
+    std::tuple<Types...>,
+    std::tuple<Keys...>
+>::type&
+get(std::tuple<Types...>& tuple, std::tuple<Keys...>& keys)
+{
+    return std::get<
+        detail::get_impl<0, T, Keys...>::type::index
+    >(tuple);
+}
+
+template <typename T, typename... Types, typename... Keys>
+const typename tuple_element<
+    T,
+    std::tuple<Types...>,
+    std::tuple<Keys...>
+>::type&
+get(const std::tuple<Types...>& tuple, const std::tuple<Keys...>& keys)
+{
+    return std::get<
+        detail::get_impl<0, T, Keys...>::type::index
+    >(tuple);
+}
 
 } // namespace mpxx
 
