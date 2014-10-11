@@ -1,6 +1,7 @@
 #ifndef __MPXX_H__
 #define __MPXX_H__
 
+#include <iostream>
 #include <tuple>
 #include <type_traits>
 
@@ -73,29 +74,30 @@ struct msg
 
     template <typename Packer>
     void msgpack_pack(Packer& p) const
-    {
-        pack_visitor<arg_count, Packer> pv(p);
-
-        for_each(values, pv);
-    }
+    { for_each(values, pack_visitor<arg_count, Packer>(p)); }
 
     void msgpack_unpack(msgpack::object o)
-    {
-        unpack_visitor<arg_count> uv(o);
-
-        for_each(values, uv);
-    }
+    { for_each(values, unpack_visitor<arg_count>(o)); }
 
     void msgpack_object(msgpack::object* o, msgpack::zone* z) const
-    {
-        object_visitor<arg_count> ov(o, z);
+    { for_each(values, object_visitor<arg_count>(o, z)); }
 
-        for_each(values, ov);
-    }
+    void dump(std::ostream& os) const
+    { for_each(values, print_visitor<arg_count>(os)); }
 
     tag_tuple_type tags;
     value_tuple_type values;
 };
+
+template <typename... Args>
+inline
+std::ostream&
+operator<<(std::ostream& os, const msg<Args...>& m)
+{
+    m.dump(os);
+
+    return os;
+}
 
 } // namespace mpxx
 

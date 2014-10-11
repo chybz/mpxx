@@ -1,6 +1,7 @@
 #ifndef __MPXX_VISITORS_H__
 #define __MPXX_VISITORS_H__
 
+#include <iostream>
 #include <cstddef>
 
 #include <msgpack.hpp>
@@ -71,6 +72,20 @@ struct object_visitor
 
     msgpack::object* o_;
     msgpack::zone* z_;
+};
+
+template <std::size_t Count>
+struct print_visitor
+{
+    print_visitor(std::ostream& os)
+    : os_(os)
+    {}
+
+    template <typename T>
+    void operator()(std::size_t pos, const T& v)
+    { os_ << (pos > 0 ? "," : "") << v; }
+
+    std::ostream& os_;
 };
 
 } // namespace mpxx

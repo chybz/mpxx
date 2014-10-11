@@ -28,10 +28,12 @@ namespace detail {
 
 template <std::size_t I, class Tuple, typename F, typename ...Args>
 struct for_each_impl {
-    static void for_each(Tuple&& t, F& f, Args&&... args)
+    static void for_each(Tuple&& t, F&& f, Args&&... args)
     {
         for_each_impl<I - 1, Tuple, F, Args...>::for_each(
-            t, f, std::forward<Args>(args)...
+            std::forward<Tuple>(t),
+            std::forward<F>(f),
+            std::forward<Args>(args)...
         );
         f(I, std::get<I>(t), std::forward<Args>(args)...);
     }
@@ -39,7 +41,7 @@ struct for_each_impl {
 
 template <class Tuple, typename F, typename... Args>
 struct for_each_impl<0, Tuple, F, Args...> {
-    static void for_each(Tuple&& t, F& f, Args&&... args)
+    static void for_each(Tuple&& t, F&& f, Args&&... args)
     {
         f(0, std::get<0>(t), std::forward<Args>(args)...);
     }
@@ -62,14 +64,18 @@ struct get_impl<Index, Search, Search, Types...>
 } // namespace detail
 
 template<class Tuple, typename F, typename... Args>
-void for_each(Tuple&& t, F& f, Args&&... args)
+void for_each(Tuple&& t, F&& f, Args&&... args)
 {
     detail::for_each_impl<
         std::tuple_size<
             typename std::decay<Tuple>::type
         >::value - 1,
         Tuple, F, Args...
-    >::for_each(t, f, std::forward<Args>(args)...);
+    >::for_each(
+        std::forward<Tuple>(t),
+        std::forward<F>(f),
+        std::forward<Args>(args)...
+    );
 }
 
 template <typename T, typename... Types>

@@ -1,6 +1,7 @@
 #define BOOST_TEST_MODULE mpxx_msg
 
 #include <string>
+#include <sstream>
 
 #include <mpxx/unit_test.hpp>
 #include <mpxx/mpxx.hpp>
@@ -50,5 +51,18 @@ BOOST_AUTO_TEST_CASE(mpxx_msg_pack_unpack)
     BOOST_CHECK_MESSAGE(
         rm.get<msg_id>() == 42 && rm.get<msg_str>() == "a message",
         "access values by tag"
+    );
+}
+
+BOOST_AUTO_TEST_CASE(mpxx_msg_dump)
+{
+    msg_type m(42, "a message");
+
+    std::ostringstream oss;
+    oss << m;
+
+    BOOST_CHECK_MESSAGE(
+        oss.str() == "42,a message",
+        "dump to stream"
     );
 }
