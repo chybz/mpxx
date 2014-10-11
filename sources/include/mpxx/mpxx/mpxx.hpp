@@ -53,6 +53,32 @@ struct msg
     get() const
     { return std::get<I>(values); }
 
+    template <
+        std::size_t... Indices,
+        typename std::enable_if<(sizeof...(Indices) > 1)>::type
+    >
+    std::tuple<
+        typename std::tuple_element<
+            Indices,
+            value_tuple_type
+        >::type&...
+    >
+    get()
+    { return std::tie(std::get<Indices>(values)...); }
+
+    template <
+        std::size_t... Indices,
+        typename std::enable_if<(sizeof...(Indices) > 1)>::type
+    >
+    std::tuple<
+        const typename std::tuple_element<
+            Indices,
+            value_tuple_type
+        >::type&...
+    >
+    get() const
+    { return std::make_tuple(std::cref(std::get<Indices>(values))...); }
+
     template <std::size_t... Indices>
     void set(
         const typename std::tuple_element<
@@ -62,9 +88,17 @@ struct msg
     )
     { std::tie(std::get<Indices>(values)...) = std::tie(vals...); }
 
-    template <std::size_t I>
-    void set(typename std::tuple_element<I, value_tuple_type>::type&& v)
-    { std::get<I>(values) = std::move(v); }
+    template <std::size_t... Indices>
+    void set(
+        typename std::tuple_element<
+            Indices,
+            value_tuple_type
+        >::type&&... vals
+    )
+    {
+        std::tie(std::get<Indices>(values)...) =
+            std::forward_as_tuple(vals...);
+    }
 
     template <typename Tag>
     typename mpxx::tuple_element<
