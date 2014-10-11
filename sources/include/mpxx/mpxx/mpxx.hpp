@@ -5,8 +5,7 @@
 #include <tuple>
 #include <type_traits>
 
-#include <msgpack.hpp>
-
+#include <mpxx/msgpack.hpp>
 #include <mpxx/tuple_utils.hpp>
 #include <mpxx/tag.hpp>
 #include <mpxx/visitors.hpp>
@@ -54,6 +53,19 @@ struct msg
     get() const
     { return std::get<I>(values); }
 
+    template <std::size_t... Indices>
+    void set(
+        const typename std::tuple_element<
+            Indices,
+            value_tuple_type
+        >::type&... vals
+    )
+    { std::tie(std::get<Indices>(values)...) = std::tie(vals...); }
+
+    template <std::size_t I>
+    void set(typename std::tuple_element<I, value_tuple_type>::type&& v)
+    { std::get<I>(values) = std::move(v); }
+
     template <typename Tag>
     typename mpxx::tuple_element<
         Tag,
@@ -70,6 +82,66 @@ struct msg
         tag_tuple_type
     >::type&
     get() const
+    { return mpxx::get<Tag>(values, tags); }
+
+    template <typename Tag>
+    void set(
+        const typename mpxx::tuple_element<
+            Tag,
+            value_tuple_type,
+            tag_tuple_type
+        >::type& v
+    )
+    { mpxx::get<Tag>(values, tags) = v; }
+
+    template <typename Tag>
+    void set(
+        typename mpxx::tuple_element<
+            Tag,
+            value_tuple_type,
+            tag_tuple_type
+        >::type&& v
+    )
+    { mpxx::get<Tag>(values, tags) = std::move(v); }
+
+    template <typename Tag>
+    typename mpxx::tuple_element<
+        Tag,
+        value_tuple_type,
+        tag_tuple_type
+    >::type&
+    operator[](Tag t)
+    { return mpxx::get<Tag>(values, tags); }
+
+    template <typename... Tags>
+    std::tuple<
+        typename mpxx::tuple_element<
+            Tags,
+            value_tuple_type,
+            tag_tuple_type
+        >::type&...
+    >
+    operator()(Tags... t)
+    { return std::tie(mpxx::get<Tags>(values, tags)...); }
+
+    template <typename... Tags>
+    std::tuple<
+        const typename mpxx::tuple_element<
+            Tags,
+            value_tuple_type,
+            tag_tuple_type
+        >::type&...
+    >
+    operator()(Tags... t) const
+    { return std::make_tuple(std::cref(mpxx::get<Tags>(values, tags))...); }
+
+    template <typename Tag>
+    const typename mpxx::tuple_element<
+        Tag,
+        value_tuple_type,
+        tag_tuple_type
+    >::type&
+    operator[](Tag t) const
     { return mpxx::get<Tag>(values, tags); }
 
     template <typename Packer>

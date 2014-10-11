@@ -4,7 +4,7 @@
 #include <iostream>
 #include <cstddef>
 
-#include <msgpack.hpp>
+#include <mpxx/msgpack.hpp>
 
 namespace mpxx {
 

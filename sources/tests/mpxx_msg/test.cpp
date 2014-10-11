@@ -66,3 +66,48 @@ BOOST_AUTO_TEST_CASE(mpxx_msg_dump)
         "dump to stream"
     );
 }
+
+BOOST_AUTO_TEST_CASE(mpxx_msg_access)
+{
+    msg_type m(42, "a message");
+
+    m.set<0, 1>(44, "junk");
+
+    BOOST_CHECK_MESSAGE(
+        m[msg_id()] == 44 && m[msg_str()] == "junk",
+        "compound assignment via set<>"
+    );
+
+    m[msg_id()] = 43;
+
+    BOOST_CHECK_MESSAGE(
+        m[msg_id()] == 43,
+        "assignment via operator[]"
+    );
+
+    m.set<1>("another message");
+
+    BOOST_CHECK_MESSAGE(
+        m[msg_str()] == "another message",
+        "assignment via set<>"
+    );
+
+    auto t = m(msg_id(), msg_str());
+
+    BOOST_CHECK_MESSAGE(
+        std::get<0>(t) == 43 && std::get<1>(t) == "another message",
+        "message value tuple"
+    );
+
+    m(msg_id(), msg_str()) = std::make_tuple(1234, "whoa");
+
+    BOOST_CHECK_MESSAGE(
+        m[msg_id()] == 1234 && m[msg_str()] == "whoa",
+        "compound assignment via operator[]"
+    );
+
+    BOOST_CHECK_MESSAGE(
+        std::get<0>(t) == 1234 && std::get<1>(t) == "whoa",
+        "message value tuple updated"
+    );
+}
