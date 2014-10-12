@@ -6,13 +6,11 @@
 #include <mpxx/unit_test.hpp>
 #include <mpxx/mpxx.hpp>
 
-struct msg_id {};
-struct msg_str {};
-
-typedef mpxx::msg<
-    mpxx::tag<msg_id, int>,
-    mpxx::tag<msg_str, std::string>
-> msg_type;
+MPXX_MSG(
+    msg_type,
+    (msg_id, int)
+    (msg_str, std::string)
+)
 
 BOOST_AUTO_TEST_CASE(mpxx_msg)
 {
@@ -75,7 +73,14 @@ BOOST_AUTO_TEST_CASE(mpxx_msg_access)
 
     BOOST_CHECK_MESSAGE(
         m[msg_id()] == 44 && m[msg_str()] == "junk",
-        "compound assignment via set<>"
+        "compound assignment via set<> and indices"
+    );
+
+    m.set<msg_id, msg_str>(45, "foo");
+
+    BOOST_CHECK_MESSAGE(
+        m[msg_id()] == 45 && m[msg_str()] == "foo",
+        "compound assignment via set<> and tags"
     );
 
     m[msg_id()] = 43;
@@ -92,10 +97,11 @@ BOOST_AUTO_TEST_CASE(mpxx_msg_access)
         "assignment via set<>"
     );
 
-    auto t = m(msg_id(), msg_str());
+    auto t1 = m.get<msg_id, msg_str>();
+    auto t2 = m(msg_id(), msg_str());
 
     BOOST_CHECK_MESSAGE(
-        std::get<0>(t) == 43 && std::get<1>(t) == "another message",
+        std::get<0>(t1) == 43 && std::get<1>(t1) == "another message",
         "message value tuple"
     );
 
@@ -107,7 +113,12 @@ BOOST_AUTO_TEST_CASE(mpxx_msg_access)
     );
 
     BOOST_CHECK_MESSAGE(
-        std::get<0>(t) == 1234 && std::get<1>(t) == "whoa",
+        std::get<0>(t1) == 1234 && std::get<1>(t1) == "whoa",
+        "message value tuple updated"
+    );
+
+    BOOST_CHECK_MESSAGE(
+        std::get<0>(t2) == 1234 && std::get<1>(t2) == "whoa",
         "message value tuple updated"
     );
 }

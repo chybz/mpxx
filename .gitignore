@@ -1,3 +1,5 @@
+*.gch
+
 # CBUILD_GITIGNORE BEGIN
 build
 CMakeLists.txt
