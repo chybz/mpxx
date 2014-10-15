@@ -10,7 +10,16 @@ MPXX_MSG(
     msg_type,
     (int, id)
     (std::string, str)
-)
+);
+
+struct value_visitor
+{
+    template <typename T>
+    void operator()(const T& v)
+    {
+        std::cout << "VV: " << v << std::endl;
+    }
+};
 
 BOOST_AUTO_TEST_CASE(mpxx_msg)
 {
@@ -18,10 +27,24 @@ BOOST_AUTO_TEST_CASE(mpxx_msg)
 
     BOOST_CHECK_MESSAGE(
         m.id == 42 && m.str == "a message",
-        "access values by index"
+        "access values by fields"
     );
 
-    //auto t = m.template operator()<id_field<int>, str_field<std::string>>();
+    auto t = m(m.id_tag, m.str_tag);
+
+    BOOST_CHECK_MESSAGE(
+        std::get<0>(t) == 42 && std::get<1>(t) == "a message",
+        "access values by tags"
+    );
+
+    m.str = "another message";
+
+    BOOST_CHECK_MESSAGE(
+        std::get<0>(t) == 42 && std::get<1>(t) == "another message",
+        "reference updated"
+    );
+
+    m.for_each(value_visitor());
 }
 
 // BOOST_AUTO_TEST_CASE(mpxx_msg_pack_unpack)

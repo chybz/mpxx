@@ -8,205 +8,18 @@
 #include <mpxx/msgpack.hpp>
 #include <mpxx/tuple_utils.hpp>
 #include <mpxx/visitors.hpp>
+#include <mpxx/mstruct.hpp>
 #include <mpxx/define.hpp>
 
 namespace mpxx {
 
 template <typename ...Fields>
-struct msg : Fields...
+struct msg : mstruct<Fields...>
 {
+    typedef mstruct<Fields...> base_type;
     typedef msg<Fields...> this_type;
-    typedef std::tuple<Fields...> fields_tuple;
-    typedef std::tuple<typename Fields::type...> values_tuple;
-    typedef std::tuple<typename Fields::tag...> tags_tuple;
 
-    static constexpr std::size_t arg_count = sizeof...(Fields);
-
-    msg() = default;
-    msg(const this_type& other) = default;
-
-    constexpr msg(typename Fields::type&&... v)
-    : Fields{v}...
-    {}
-
-    template <typename... Tags>
-    std::tuple<
-        typename mpxx::tuple_element<
-            Tags,
-            value_tuple_type,
-            tag_tuple_type
-        >::type&...
-    >
-    operator()(Tags... t)
-    {
-
-    }
-
-    // template <std::size_t I>
-    // typename std::tuple_element<I, value_tuple_type>::type&
-    // get()
-    // { return std::get<I>(values); }
-
-    // template <std::size_t I>
-    // const typename std::tuple_element<I, value_tuple_type>::type&
-    // get() const
-    // { return std::get<I>(values); }
-
-    // template <
-    //     std::size_t... Indices,
-    //     typename std::enable_if<(sizeof...(Indices) > 1)>::type
-    // >
-    // std::tuple<
-    //     typename std::tuple_element<
-    //         Indices,
-    //         value_tuple_type
-    //     >::type&...
-    // >
-    // get()
-    // { return std::tie(std::get<Indices>(values)...); }
-
-    // template <
-    //     std::size_t... Indices,
-    //     typename std::enable_if<(sizeof...(Indices) > 1)>::type
-    // >
-    // std::tuple<
-    //     const typename std::tuple_element<
-    //         Indices,
-    //         value_tuple_type
-    //     >::type&...
-    // >
-    // get() const
-    // { return std::make_tuple(std::cref(std::get<Indices>(values))...); }
-
-    // template <std::size_t... Indices>
-    // void set(
-    //     const typename std::tuple_element<
-    //         Indices,
-    //         value_tuple_type
-    //     >::type&... vals
-    // )
-    // { std::tie(std::get<Indices>(values)...) = std::tie(vals...); }
-
-    // template <std::size_t... Indices>
-    // void set(
-    //     typename std::tuple_element<
-    //         Indices,
-    //         value_tuple_type
-    //     >::type&&... vals
-    // )
-    // {
-    //     std::tie(std::get<Indices>(values)...) =
-    //         std::forward_as_tuple(vals...);
-    // }
-
-    // template <typename Tag>
-    // typename mpxx::tuple_element<
-    //     Tag,
-    //     value_tuple_type,
-    //     tag_tuple_type
-    // >::type&
-    // get()
-    // { return mpxx::get<Tag>(values, tags); }
-
-    // template <typename Tag>
-    // const typename mpxx::tuple_element<
-    //     Tag,
-    //     value_tuple_type,
-    //     tag_tuple_type
-    // >::type&
-    // get() const
-    // { return mpxx::get<Tag>(values, tags); }
-
-    // template <
-    //     typename... Tags,
-    //     typename Enable = typename std::enable_if<(sizeof...(Tags) > 1)>::type
-    // >
-    // std::tuple<
-    //     typename mpxx::tuple_element<
-    //         Tags,
-    //         value_tuple_type,
-    //         tag_tuple_type
-    //     >::type&...
-    // >
-    // get()
-    // { return std::tie(mpxx::get<Tags>(values, tags)...); }
-
-    // template <
-    //     typename... Tags,
-    //     typename std::enable_if<(sizeof...(Tags) > 1)>::type
-    // >
-    // std::tuple<
-    //     const typename mpxx::tuple_element<
-    //         Tags,
-    //         value_tuple_type,
-    //         tag_tuple_type
-    //     >::type&...
-    // >
-    // get()
-    // { return std::make_tuple(std::cref(mpxx::get<Tags>(values, tags))...); }
-
-    // template <typename... Tags>
-    // void set(
-    //     const typename mpxx::tuple_element<
-    //         Tags,
-    //         value_tuple_type,
-    //         tag_tuple_type
-    //     >::type&... vals
-    // )
-    // { std::tie(mpxx::get<Tags>(values, tags)...) = std::tie(vals...); }
-
-    // template <typename... Tags>
-    // void set(
-    //     typename mpxx::tuple_element<
-    //         Tags,
-    //         value_tuple_type,
-    //         tag_tuple_type
-    //     >::type&&... vals
-    // )
-    // {
-    //     std::tie(mpxx::get<Tags>(values, tags)...) =
-    //         std::forward_as_tuple(vals...);
-    // }
-
-    // template <typename Tag>
-    // typename mpxx::tuple_element<
-    //     Tag,
-    //     value_tuple_type,
-    //     tag_tuple_type
-    // >::type&
-    // operator[](Tag t)
-    // { return mpxx::get<Tag>(values, tags); }
-
-    // template <typename... Tags>
-    // std::tuple<
-    //     typename mpxx::tuple_element<
-    //         Tags,
-    //         value_tuple_type,
-    //         tag_tuple_type
-    //     >::type&...
-    // >
-    // operator()(Tags... t)
-    // { return get<Tags...>(); }
-
-    // template <typename... Tags>
-    // std::tuple<
-    //     const typename mpxx::tuple_element<
-    //         Tags,
-    //         value_tuple_type,
-    //         tag_tuple_type
-    //     >::type&...
-    // >
-    // operator()(Tags... t) const
-    // { return get<Tags...>(); }
-
-    // template <typename Tag>
-    // const typename mpxx::tuple_element<
-    //     Tag,
-    //     value_tuple_type,
-    //     tag_tuple_type
-    // >::type&
-    // operator[](Tag t) const
-    // { return mpxx::get<Tag>(values, tags); }
+    using base_type::base_type;
 
     // template <typename Packer>
     // void msgpack_pack(Packer& p) const
@@ -220,9 +33,6 @@ struct msg : Fields...
 
     // void dump(std::ostream& os) const
     // { for_each(values, print_visitor<arg_count>(os)); }
-
-    // tag_tuple_type tags;
-    // value_tuple_type values;
 };
 
 // template <typename... Args>

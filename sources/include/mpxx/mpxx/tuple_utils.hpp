@@ -10,16 +10,16 @@
 
 namespace mpxx {
 
-template <int ...>
+template <std::size_t ...>
 struct tuple_indices
 {};
 
-template <int N, int ...I>
+template <std::size_t N, std::size_t ...I>
 struct make_tuple_indices
 : make_tuple_indices<N - 1, N - 1, I...>
 {};
 
-template<int ...I>
+template<std::size_t ...I>
 struct make_tuple_indices<0, I...> {
     typedef tuple_indices<I...> type;
 };
@@ -44,6 +44,26 @@ struct for_each_impl<0, Tuple, F, Args...> {
     static void for_each(Tuple&& t, F&& f, Args&&... args)
     {
         f(0, std::get<0>(t), std::forward<Args>(args)...);
+    }
+};
+
+template <std::size_t I, class Class, class Tuple, typename ...Args>
+struct visit_each_impl {
+    static void visit_each(Class& c, Args&&... args)
+    {
+        visit_each_impl<I - 1, Class, Tuple, Args...>::visit_each(
+            c,
+            std::forward<Args>(args)...
+        );
+        c.template operator()<I>(std::forward<Args>(args)...);
+    }
+};
+
+template <class Class, class Tuple, typename... Args>
+struct visit_each_impl<0, Class, Tuple, Args...> {
+    static void visit_each(Class& c, Args&&... args)
+    {
+        c.template operator()<0>(std::forward<Args>(args)...);
     }
 };
 
@@ -74,6 +94,20 @@ void for_each(Tuple&& t, F&& f, Args&&... args)
     >::for_each(
         std::forward<Tuple>(t),
         std::forward<F>(f),
+        std::forward<Args>(args)...
+    );
+}
+
+template <typename Class, typename Tuple, typename... Args>
+void visit_each(Class& c, Args&&... args)
+{
+    detail::visit_each_impl<
+        std::tuple_size<
+            typename std::decay<Tuple>::type
+        >::value - 1,
+        Class, Tuple, Args...
+    >::visit_each(
+        c,
         std::forward<Args>(args)...
     );
 }
