@@ -8,6 +8,10 @@
 
 namespace mpxx {
 
+struct value_visit {};
+struct pos_visit {};
+struct value_pos_visit {};
+
 template <
     std::size_t Count,
     typename Packer
@@ -19,7 +23,7 @@ struct pack_visitor
     { p_.pack_array(Count); }
 
     template <typename T>
-    void operator()(std::size_t pos, T& v)
+    void operator()(T& v)
     { p_.pack(v); }
 
     Packer& p_;
@@ -39,7 +43,7 @@ struct unpack_visitor
     }
 
     template <typename T>
-    void operator()(std::size_t pos, T& v)
+    void operator()(T& v, std::size_t pos)
     {
         if (pos > size_) {
             return;
@@ -67,7 +71,7 @@ struct object_visitor
     }
 
     template <typename T>
-    void operator()(std::size_t pos, T& v)
+    void operator()(T& v, std::size_t pos)
     { o_->via.array.ptr[pos] = object(v, z_); }
 
     msgpack::object* o_;
@@ -82,7 +86,7 @@ struct print_visitor
     {}
 
     template <typename T>
-    void operator()(std::size_t pos, const T& v)
+    void operator()(const T& v, std::size_t pos)
     { os_ << (pos > 0 ? "," : "") << v; }
 
     std::ostream& os_;

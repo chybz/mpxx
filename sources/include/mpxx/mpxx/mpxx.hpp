@@ -21,29 +21,45 @@ struct msg : mstruct<Fields...>
 
     using base_type::base_type;
 
-    // template <typename Packer>
-    // void msgpack_pack(Packer& p) const
-    // { for_each(values, pack_visitor<arg_count, Packer>(p)); }
+    template <typename Packer>
+    void msgpack_pack(Packer& p) const
+    {
+        base_type::for_each(
+            pack_visitor<base_type::arg_count, Packer>(p)
+        );
+    }
 
-    // void msgpack_unpack(msgpack::object o)
-    // { for_each(values, unpack_visitor<arg_count>(o)); }
+    void msgpack_unpack(msgpack::object o)
+    {
+        base_type::template for_each<value_pos_visit>(
+            unpack_visitor<base_type::arg_count>(o)
+        );
+    }
 
-    // void msgpack_object(msgpack::object* o, msgpack::zone* z) const
-    // { for_each(values, object_visitor<arg_count>(o, z)); }
+    void msgpack_object(msgpack::object* o, msgpack::zone* z) const
+    {
+        base_type::template for_each<value_pos_visit>(
+            object_visitor<base_type::arg_count>(o, z)
+        );
+    }
 
-    // void dump(std::ostream& os) const
-    // { for_each(values, print_visitor<arg_count>(os)); }
+    void dump(std::ostream& os) const
+    {
+        base_type::template for_each<value_pos_visit>(
+            print_visitor<base_type::arg_count>(os)
+        );
+    }
 };
 
-// template <typename... Args>
-// inline
-// std::ostream&
-// operator<<(std::ostream& os, const msg<Args...>& m)
-// {
-//     m.dump(os);
+template <typename... Args>
+inline
+std::ostream&
+operator<<(std::ostream& os, const msg<Args...>& m)
+{
+    m.dump(os);
 
-//     return os;
-// }
+    return os;
+}
 
 } // namespace mpxx
 

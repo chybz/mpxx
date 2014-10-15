@@ -74,15 +74,49 @@ struct mstruct : Fields...
 
     template <typename F>
     void for_each(F&& f)
+    { for_each<value_visit>(f); }
+
+    template <typename F>
+    void for_each(F&& f) const
+    { for_each<value_visit>(f); }
+
+    template <typename Tag, typename F>
+    void for_each(F&& f)
     {
-        visit_each<this_type, values_tuple>(*this, f);
+        visit_each<this_type, values_tuple>(
+            std::forward<this_type>(*this),
+            f, Tag()
+        );
+    }
+
+    template <typename Tag, typename F>
+    void for_each(F&& f) const
+    {
+        visit_each<this_type const, values_tuple>(
+            std::forward<this_type const>(*this),
+            f, Tag()
+        );
     }
 
     template <std::size_t I, typename F>
-    void operator()(F&& f)
-    {
-        f(std::tuple_element<I, fields_tuple>::type::value());
-    }
+    void operator()(F&& f, value_visit tag)
+    { f(std::tuple_element<I, fields_tuple>::type::value()); }
+
+    template <std::size_t I, typename F>
+    void operator()(F&& f, value_visit tag) const
+    { f(std::tuple_element<I, fields_tuple>::type::value()); }
+
+    template <std::size_t I, typename F>
+    void operator()(F&& f, pos_visit tag) const
+    { f(I); }
+
+    template <std::size_t I, typename F>
+    void operator()(F&& f, value_pos_visit tag)
+    { f(std::tuple_element<I, fields_tuple>::type::value(), I); }
+
+    template <std::size_t I, typename F>
+    void operator()(F&& f, value_pos_visit tag) const
+    { f(std::tuple_element<I, fields_tuple>::type::value(), I); }
 };
 
 // template <typename... Args>

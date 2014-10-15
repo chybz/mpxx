@@ -99,7 +99,7 @@ void for_each(Tuple&& t, F&& f, Args&&... args)
 }
 
 template <typename Class, typename Tuple, typename... Args>
-void visit_each(Class& c, Args&&... args)
+void visit_each(Class&& c, Args&&... args)
 {
     detail::visit_each_impl<
         std::tuple_size<
