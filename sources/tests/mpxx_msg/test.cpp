@@ -110,6 +110,8 @@ BOOST_AUTO_TEST_CASE(mpxx_msg_dump)
 BOOST_AUTO_TEST_CASE(mpxx_intersect)
 {
     mstruct1 m1(true, 42.42);
-    mstruct2 m2(1234, 42.42);
-    mstruct2 m2(4567, false, 84.84, "a name");
+    mstruct2 m2(1234, 42.43);
+    mstruct3 m3(4567, false, 84.84, "a name");
+
+    m1.update(m2);
 }

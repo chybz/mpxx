@@ -8,7 +8,8 @@
 #include <boost/preprocessor/stringize.hpp>
 #include <boost/preprocessor/punctuation/comma_if.hpp>
 #include <boost/preprocessor/control/if.hpp>
-#include <boost/preprocessor/control/expr_if.hpp>
+#include <boost/preprocessor/facilities/expand.hpp>
+#include <boost/preprocessor/facilities/identity.hpp>
 
 // Preprocessor boilerplate stolen from boost::fusion::adapt_struct
 #define MPXX_TESC_0(X, Y) \
@@ -30,10 +31,10 @@ typedef \
     BOOST_PP_CAT(NAME, _field)< \
         TYPE, \
         BOOST_PP_CAT(NAME, _tag_type) \
-    > NAME;
+    > BOOST_PP_CAT(NAME, _field_type);
 
 #define MPXX_DEFINE_FIELD_STRUCT(TYPE, NAME) \
-struct BOOST_PP_CAT(NAME, _tag_type) {}; \
+struct BOOST_PP_CAT(NAME, _tag_type) : mpxx::tag_base {}; \
 \
 template <typename Type, typename Tag> \
 struct BOOST_PP_CAT(NAME, _field) \
@@ -89,6 +90,10 @@ struct BOOST_PP_CAT(NAME, _field) \
         BOOST_PP_CAT(BOOST_PP_TUPLE_ELEM(2, 1,FIELD),_tag_type) \
     >
 
+#define MPXX_MAKE_EXT_FIELD(R, DATA, I, FIELD) \
+    BOOST_PP_COMMA_IF(I) \
+    BOOST_PP_CAT(BOOST_PP_EXPAND FIELD, _field_type)
+
 #define MPXX_DEFINE_FIELDS(FIELDS) \
     BOOST_PP_SEQ_FOR_EACH(MPXX_DEFINE_FIELD, 1, FIELDS)
 
@@ -105,13 +110,13 @@ struct NAME : BASE<\
     BOOST_PP_SEQ_FOR_EACH(MPXX_DEFINE_TAG, ~, FIELDS) \
 };
 
-#define MPXX_DEFINE_BASE_FIELDS(BASE, NAME, FIELDS) \
+#define MPXX_DEFINE_BASE_EXT_FIELDS(BASE, NAME, FIELDS) \
 struct NAME : BASE<\
-    BOOST_PP_SEQ_ENUM(FIELDS) \
+    BOOST_PP_SEQ_FOR_EACH_I(MPXX_MAKE_EXT_FIELD, NAME, FIELDS) \
 > \
 { \
     typedef BASE<\
-        BOOST_PP_SEQ_ENUM(FIELDS) \
+        BOOST_PP_SEQ_FOR_EACH_I(MPXX_MAKE_EXT_FIELD, NAME, FIELDS) \
     > base_type; \
     using base_type::base_type; \
 };
@@ -129,7 +134,7 @@ struct NAME : BASE<\
     )
 
 #define MPXX_STRUCT_EXT_FIELDS(NAME, FIELDS) \
-    MPXX_DEFINE_BASE_FIELDS( \
+    MPXX_DEFINE_BASE_EXT_FIELDS( \
         mpxx::mstruct, \
         NAME, \
         BOOST_PP_CAT(MPXX_ESC_0 FIELDS,_END) \

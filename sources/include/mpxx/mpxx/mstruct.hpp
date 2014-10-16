@@ -11,6 +11,8 @@
 
 namespace mpxx {
 
+struct tag_base {};
+
 template <typename ...Fields>
 struct mstruct : Fields...
 {
@@ -33,20 +35,72 @@ struct mstruct : Fields...
     {}
 
     template <typename... OtherFields>
-    this_type& operator=(const mstruct<OtherFields...>& other)
+    void update(const mstruct<OtherFields...>& other)
     {
         typedef typename mpxx::intersect_type_seq<
             tags_tuple,
             typename mstruct<OtherFields...>::tags_tuple
         >::type common_tags_tuple;
 
-        std::cout
-            << std::tuple_size<common_tags_tuple>::value
-            << " common tags"
-            << std::endl;
-
-        return *this;
+        update(common_tags_tuple(), other);
     }
+
+    template <typename... Tags, typename... OtherFields>
+    void update(
+        const std::tuple<Tags...>& tags,
+        const mstruct<OtherFields...>& other
+    )
+    {
+        std::tie(
+            mpxx::tuple_element<
+                Tags,
+                fields_tuple,
+                tags_tuple
+            >::type::value()...
+        ) = other(tags);
+    }
+
+    ///////////////////////////////////
+    template <typename... Tags>
+    std::tuple<
+        typename mpxx::tuple_element<
+            Tags,
+            values_tuple,
+            tags_tuple
+        >::type&...
+    >
+    operator()(const std::tuple<Tags...>& t)
+    {
+        return std::tie(
+            mpxx::tuple_element<
+                Tags,
+                fields_tuple,
+                tags_tuple
+            >::type::value()...
+        );
+    }
+
+    template <typename... Tags>
+    std::tuple<
+        const typename mpxx::tuple_element<
+            Tags,
+            values_tuple,
+            tags_tuple
+        >::type&...
+    >
+    operator()(const std::tuple<Tags...>& t) const
+    {
+        return std::make_tuple(
+            std::cref(
+                mpxx::tuple_element<
+                    Tags,
+                    fields_tuple,
+                    tags_tuple
+                >::type::value()
+            )...
+        );
+    }
+    ///////////////////////////////////
 
     template <typename... Tags>
     std::tuple<
