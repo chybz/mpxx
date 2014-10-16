@@ -124,47 +124,64 @@ struct tuple_element<T, std::tuple<Types...>, std::tuple<Keys...>>
     >::type type;
 };
 
-template <typename T, typename... Types>
-T& get(std::tuple<Types...>& tuple)
-{
-    return std::get<
-        detail::get_impl<0, T, Types...>::type::index
-    >(tuple);
-}
+// Tuple sequence utilities
+template <typename T, typename... Ts>
+struct is_member_of_type_seq
+{ static const bool value = false; };
 
-template <typename T, typename... Types>
-const T& get(const std::tuple<Types...>& tuple)
+template <typename T, typename U, typename... Ts>
+struct is_member_of_type_seq<T, U, Ts...>
 {
-    return std::get<
-        detail::get_impl<0, T, Types...>::type::index
-    >(tuple);
-}
+    static const bool value = std::conditional<
+        std::is_same<T, U>::value,
+        std::true_type,
+        is_member_of_type_seq<T, Ts...>
+    >::type::value;
+};
 
-template <typename T, typename... Types, typename... Keys>
-typename tuple_element<
-    T,
-    std::tuple<Types...>,
-    std::tuple<Keys...>
->::type&
-get(std::tuple<Types...>& tuple, std::tuple<Keys...>& keys)
-{
-    return std::get<
-        detail::get_impl<0, T, Keys...>::type::index
-    >(tuple);
-}
+template <typename, typename>
+struct append_to_type_seq { };
 
-template <typename T, typename... Types, typename... Keys>
-const typename tuple_element<
-    T,
-    std::tuple<Types...>,
-    std::tuple<Keys...>
->::type&
-get(const std::tuple<Types...>& tuple, const std::tuple<Keys...>& keys)
+template <typename T, typename... Ts>
+struct append_to_type_seq<T, std::tuple<Ts...>>
 {
-    return std::get<
-        detail::get_impl<0, T, Keys...>::type::index
-    >(tuple);
-}
+    using type = std::tuple<Ts..., T>;
+};
+
+template<typename, typename>
+struct prepend_to_type_seq { };
+
+template<typename T, typename... Ts>
+struct prepend_to_type_seq<T, std::tuple<Ts...>>
+{
+    using type = std::tuple<T, Ts...>;
+};
+
+// Tuple sequence meta functions
+template <typename, typename>
+struct intersect_type_seq
+{
+    using type = std::tuple<>;
+};
+
+template <typename T, typename... Ts, typename... Us>
+struct intersect_type_seq<std::tuple<T, Ts...>, std::tuple<Us...>>
+{
+    using type = typename std::conditional<
+        !is_member_of_type_seq<T, Us...>::value,
+        typename intersect_type_seq<
+            std::tuple<Ts...>,
+            std::tuple<Us...>
+        >::type,
+        typename prepend_to_type_seq<
+            T,
+            typename intersect_type_seq<
+                std::tuple<Ts...>,
+                std::tuple<Us...>
+            >::type
+        >::type
+    >::type;
+};
 
 } // namespace mpxx
 

@@ -11,12 +11,19 @@
 #include <boost/preprocessor/control/expr_if.hpp>
 
 // Preprocessor boilerplate stolen from boost::fusion::adapt_struct
-#define MPXX_FILLER_0(X, Y) \
-    ((X, Y)) MPXX_FILLER_1
-#define MPXX_FILLER_1(X, Y) \
-    ((X, Y)) MPXX_FILLER_0
-#define MPXX_FILLER_0_END
-#define MPXX_FILLER_1_END
+#define MPXX_TESC_0(X, Y) \
+    ((X, Y)) MPXX_TESC_1
+#define MPXX_TESC_1(X, Y) \
+    ((X, Y)) MPXX_TESC_0
+#define MPXX_TESC_0_END
+#define MPXX_TESC_1_END
+
+#define MPXX_ESC_0(X) \
+    ((X)) MPXX_ESC_1
+#define MPXX_ESC_1(X) \
+    ((X)) MPXX_ESC_0
+#define MPXX_ESC_0_END
+#define MPXX_ESC_1_END
 
 #define MPXX_DEFINE_COMMON_FIELD(TYPE, NAME) \
 typedef \
@@ -111,28 +118,28 @@ struct NAME : BASE<\
 
 #define MPXX_FIELDS(FIELDS) \
     MPXX_DEFINE_FIELDS( \
-        BOOST_PP_CAT(MPXX_FILLER_0 FIELDS,_END) \
+        BOOST_PP_CAT(MPXX_TESC_0 FIELDS,_END) \
     )
 
 #define MPXX_STRUCT(NAME,FIELDS) \
     MPXX_DEFINE_BASE( \
         mpxx::mstruct, \
         NAME, \
-        BOOST_PP_CAT(MPXX_FILLER_0 FIELDS,_END) \
+        BOOST_PP_CAT(MPXX_TESC_0 FIELDS,_END) \
     )
 
 #define MPXX_STRUCT_EXT_FIELDS(NAME, FIELDS) \
     MPXX_DEFINE_BASE_FIELDS( \
         mpxx::mstruct, \
         NAME, \
-        FIELDS \
+        BOOST_PP_CAT(MPXX_ESC_0 FIELDS,_END) \
     )
 
 #define MPXX_MSG(NAME, FIELDS) \
     MPXX_DEFINE_BASE( \
         mpxx::msg, \
         NAME, \
-        BOOST_PP_CAT(MPXX_FILLER_0 FIELDS,_END) \
+        BOOST_PP_CAT(MPXX_TESC_0 FIELDS,_END) \
     )
 
 #ifdef MPXX_DEBUG

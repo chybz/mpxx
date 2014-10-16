@@ -12,6 +12,33 @@ MPXX_MSG(
     (std::string, str)
 );
 
+MPXX_FIELDS(
+    (std::size_t, counter)
+    (bool, valid)
+    (std::string, label)
+    (double, avg)
+);
+
+MPXX_STRUCT_EXT_FIELDS(
+    mstruct1,
+    (valid)
+    (avg)
+);
+
+MPXX_STRUCT_EXT_FIELDS(
+    mstruct2,
+    (counter)
+    (avg)
+);
+
+MPXX_STRUCT_EXT_FIELDS(
+    mstruct3,
+    (counter)
+    (valid)
+    (avg)
+    (label)
+);
+
 struct value_visitor
 {
     template <typename T>
@@ -78,4 +105,11 @@ BOOST_AUTO_TEST_CASE(mpxx_msg_dump)
         oss.str() == "42,a message",
         "dump to stream"
     );
+}
+
+BOOST_AUTO_TEST_CASE(mpxx_intersect)
+{
+    mstruct1 m1(true, 42.42);
+    mstruct2 m2(1234, 42.42);
+    mstruct2 m2(4567, false, 84.84, "a name");
 }

@@ -32,6 +32,22 @@ struct mstruct : Fields...
     : Fields{v}...
     {}
 
+    template <typename... OtherFields>
+    this_type& operator=(const mstruct<OtherFields...>& other)
+    {
+        typedef typename mpxx::intersect_type_seq<
+            tags_tuple,
+            typename mstruct<OtherFields...>::tags_tuple
+        >::type common_tags_tuple;
+
+        std::cout
+            << std::tuple_size<common_tags_tuple>::value
+            << " common tags"
+            << std::endl;
+
+        return *this;
+    }
+
     template <typename... Tags>
     std::tuple<
         typename mpxx::tuple_element<
