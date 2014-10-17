@@ -154,10 +154,16 @@ MPXX_FIELDS(
 );
 
 MPXX_STRUCT_EXT_FIELDS(
-    msg_type,
+    struct_type,
     (toto)
     (titi)
-)
+);
+
+MPXX_MSG(
+    msg_type,
+    (int, id)
+    (std::string, str)
+);
 #endif
 
 #endif // __MPXX_DEFINE_H__

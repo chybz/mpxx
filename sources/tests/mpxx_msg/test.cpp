@@ -74,38 +74,38 @@ BOOST_AUTO_TEST_CASE(mpxx_msg)
     m.for_each(value_visitor());
 }
 
-BOOST_AUTO_TEST_CASE(mpxx_msg_pack_unpack)
-{
-    msg_type m(42, "a message");
+// BOOST_AUTO_TEST_CASE(mpxx_msg_pack_unpack)
+// {
+//     msg_type m(42, "a message");
 
-    msgpack::sbuffer sbuf;
-    msgpack::pack(sbuf, m);
+//     msgpack::sbuffer sbuf;
+//     msgpack::pack(sbuf, m);
 
-    msgpack::unpacked u;
-    msgpack::unpack(&u, sbuf.data(), sbuf.size());
+//     msgpack::unpacked u;
+//     msgpack::unpack(&u, sbuf.data(), sbuf.size());
 
-    msg_type rm;
-    msgpack::object obj = u.get();
-    obj.convert(&rm);
+//     msg_type rm;
+//     msgpack::object obj = u.get();
+//     obj.convert(&rm);
 
-    BOOST_CHECK_MESSAGE(
-        rm.id == 42 && rm.str == "a message",
-        "access values by fields"
-    );
-}
+//     BOOST_CHECK_MESSAGE(
+//         rm.id == 42 && rm.str == "a message",
+//         "access values by fields"
+//     );
+// }
 
-BOOST_AUTO_TEST_CASE(mpxx_msg_dump)
-{
-    msg_type m(42, "a message");
+// BOOST_AUTO_TEST_CASE(mpxx_msg_dump)
+// {
+//     msg_type m(42, "a message");
 
-    std::ostringstream oss;
-    oss << m;
+//     std::ostringstream oss;
+//     oss << m;
 
-    BOOST_CHECK_MESSAGE(
-        oss.str() == "42,a message",
-        "dump to stream"
-    );
-}
+//     BOOST_CHECK_MESSAGE(
+//         oss.str() == "42,a message",
+//         "dump to stream"
+//     );
+// }
 
 BOOST_AUTO_TEST_CASE(mpxx_intersect)
 {

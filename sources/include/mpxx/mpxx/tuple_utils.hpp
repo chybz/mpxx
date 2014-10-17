@@ -183,6 +183,28 @@ struct intersect_type_seq<std::tuple<T, Ts...>, std::tuple<Us...>>
     >::type;
 };
 
+template <typename... Ts>
+struct all_of;
+
+template <typename T>
+struct all_of<T> : std::integral_constant<bool, T::value>
+{};
+
+template<typename T, typename... Ts>
+struct all_of<T, Ts...>
+: std::integral_constant<
+    bool,
+    T::value && all_of<Ts...>::value
+>
+{};
+
+template <typename A, typename... Deriveds>
+struct all_base_of
+{
+    static constexpr bool value =
+        all_of<std::is_base_of<A, Deriveds>...>::value;
+};
+
 } // namespace mpxx
 
 #endif // __MPXX_TUPLE_UTILS_H__

@@ -102,7 +102,12 @@ struct mstruct : Fields...
     }
     ///////////////////////////////////
 
-    template <typename... Tags>
+    template <
+        typename... Tags,
+        typename std::enable_if<
+            mpxx::all_base_of<mpxx::tag_base, Tags...>::value
+        >::type
+    >
     std::tuple<
         typename mpxx::tuple_element<
             Tags,
@@ -110,7 +115,7 @@ struct mstruct : Fields...
             tags_tuple
         >::type&...
     >
-    operator()(Tags... t)
+    operator()(Tags&&... t)
     {
         return std::tie(
             mpxx::tuple_element<
@@ -121,7 +126,12 @@ struct mstruct : Fields...
         );
     }
 
-    template <typename... Tags>
+    template <
+        typename... Tags,
+        typename std::enable_if<
+            mpxx::all_base_of<mpxx::tag_base, Tags...>::value
+        >::type
+    >
     std::tuple<
         const typename mpxx::tuple_element<
             Tags,
@@ -129,7 +139,7 @@ struct mstruct : Fields...
             tags_tuple
         >::type&...
     >
-    operator()(Tags... t) const
+    operator()(Tags&&... t) const
     {
         return std::make_tuple(
             std::cref(
