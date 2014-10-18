@@ -5,6 +5,7 @@
 
 #include <type_traits>
 #include <tuple>
+#include <mpxx/access.hpp>
 
 #define RETURNS(x) -> decltype(x) { return x; }
 
@@ -55,7 +56,7 @@ struct visit_each_impl {
             c,
             std::forward<Args>(args)...
         );
-        c.template operator()<I>(std::forward<Args>(args)...);
+        mpxx::access::call<I>(c, std::forward<Args>(args)...);
     }
 };
 
@@ -63,7 +64,7 @@ template <class Class, class Tuple, typename... Args>
 struct visit_each_impl<0, Class, Tuple, Args...> {
     static void visit_each(Class& c, Args&&... args)
     {
-        c.template operator()<0>(std::forward<Args>(args)...);
+        mpxx::access::call<0>(c, std::forward<Args>(args)...);
     }
 };
 

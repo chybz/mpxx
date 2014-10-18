@@ -35,7 +35,7 @@ struct mstruct : Fields...
     {}
 
     template <typename... OtherFields>
-    void update(const mstruct<OtherFields...>& other)
+    this_type& operator<<(const mstruct<OtherFields...>& other)
     {
         typedef typename mpxx::intersect_type_seq<
             tags_tuple,
@@ -43,6 +43,8 @@ struct mstruct : Fields...
         >::type common_tags_tuple;
 
         update(common_tags_tuple(), other);
+
+        return *this;
     }
 
     template <typename... Tags, typename... OtherFields>
@@ -60,7 +62,6 @@ struct mstruct : Fields...
         ) = other(tags);
     }
 
-    ///////////////////////////////////
     template <typename... Tags>
     std::tuple<
         typename mpxx::tuple_element<
@@ -100,11 +101,10 @@ struct mstruct : Fields...
             )...
         );
     }
-    ///////////////////////////////////
 
     template <
         typename... Tags,
-        typename std::enable_if<
+        typename Enable = typename std::enable_if<
             mpxx::all_base_of<mpxx::tag_base, Tags...>::value
         >::type
     >
@@ -115,7 +115,7 @@ struct mstruct : Fields...
             tags_tuple
         >::type&...
     >
-    operator()(Tags&&... t)
+    operator()(const Tags&... t)
     {
         return std::tie(
             mpxx::tuple_element<
@@ -128,7 +128,7 @@ struct mstruct : Fields...
 
     template <
         typename... Tags,
-        typename std::enable_if<
+        typename Enable = typename std::enable_if<
             mpxx::all_base_of<mpxx::tag_base, Tags...>::value
         >::type
     >
@@ -139,7 +139,7 @@ struct mstruct : Fields...
             tags_tuple
         >::type&...
     >
-    operator()(Tags&&... t) const
+    operator()(const Tags&... t) const
     {
         return std::make_tuple(
             std::cref(
@@ -177,6 +177,9 @@ struct mstruct : Fields...
             f, Tag()
         );
     }
+
+private:
+    friend mpxx::access;
 
     template <std::size_t I, typename F>
     void operator()(F&& f, value_visit tag)

@@ -71,8 +71,8 @@ struct BOOST_PP_CAT(NAME, _field) \
         BOOST_PP_TUPLE_ELEM(2, 1, FIELD) \
     )
 
-#define MPXX_DEFINE_TAG(R, DATA, FIELD) \
-    static constexpr BOOST_PP_CAT( \
+#define MPXX_DEFINE_FIELD_TAG(R, DATA, FIELD) \
+    const BOOST_PP_CAT( \
         BOOST_PP_TUPLE_ELEM(2, 1, FIELD), \
         _tag_type \
     ) BOOST_PP_CAT( \
@@ -83,11 +83,23 @@ struct BOOST_PP_CAT(NAME, _field) \
         _tag_type \
     )();
 
+#define MPXX_DEFINE_EXT_FIELD_TAG(R, DATA, FIELD) \
+    const BOOST_PP_CAT( \
+        BOOST_PP_EXPAND FIELD, \
+        _tag_type \
+    ) BOOST_PP_CAT( \
+        BOOST_PP_EXPAND FIELD, \
+        _tag \
+    ) = BOOST_PP_CAT( \
+        BOOST_PP_EXPAND FIELD, \
+        _tag_type \
+    )();
+
 #define MPXX_MAKE_FIELD(R, DATA, I, FIELD) \
     BOOST_PP_COMMA_IF(I) \
-    BOOST_PP_CAT(BOOST_PP_TUPLE_ELEM(2, 1,FIELD),_field)<\
-        BOOST_PP_TUPLE_ELEM(2, 0,FIELD),\
-        BOOST_PP_CAT(BOOST_PP_TUPLE_ELEM(2, 1,FIELD),_tag_type) \
+    BOOST_PP_CAT(BOOST_PP_TUPLE_ELEM(2, 1, FIELD), _field)<\
+        BOOST_PP_TUPLE_ELEM(2, 0, FIELD),\
+        BOOST_PP_CAT(BOOST_PP_TUPLE_ELEM(2, 1, FIELD), _tag_type) \
     >
 
 #define MPXX_MAKE_EXT_FIELD(R, DATA, I, FIELD) \
@@ -107,7 +119,7 @@ struct NAME : BASE<\
         BOOST_PP_SEQ_FOR_EACH_I(MPXX_MAKE_FIELD, NAME, FIELDS) \
     > base_type; \
     using base_type::base_type; \
-    BOOST_PP_SEQ_FOR_EACH(MPXX_DEFINE_TAG, ~, FIELDS) \
+    BOOST_PP_SEQ_FOR_EACH(MPXX_DEFINE_FIELD_TAG, ~, FIELDS) \
 };
 
 #define MPXX_DEFINE_BASE_EXT_FIELDS(BASE, NAME, FIELDS) \
@@ -119,6 +131,7 @@ struct NAME : BASE<\
         BOOST_PP_SEQ_FOR_EACH_I(MPXX_MAKE_EXT_FIELD, NAME, FIELDS) \
     > base_type; \
     using base_type::base_type; \
+    BOOST_PP_SEQ_FOR_EACH(MPXX_DEFINE_EXT_FIELD_TAG, ~, FIELDS) \
 };
 
 #define MPXX_FIELDS(FIELDS) \

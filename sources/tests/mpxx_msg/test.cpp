@@ -48,64 +48,90 @@ struct value_visitor
     }
 };
 
+BOOST_AUTO_TEST_CASE(mpxx_mstruct)
+{
+    mstruct1 m(false, 42.42);
+
+    BOOST_CHECK_MESSAGE(
+        m.valid == false && m.avg == 42.42,
+        "mstruct access values by fields"
+    );
+
+    auto t = m(m.valid_tag, m.avg_tag);
+
+    BOOST_CHECK_MESSAGE(
+        std::get<0>(t) == false && std::get<1>(t) == 42.42,
+        "mstruct access values by tags"
+    );
+
+    m.valid = true;
+
+    BOOST_CHECK_MESSAGE(
+        std::get<0>(t) == true && std::get<1>(t) == 42.42,
+        "mstruct reference updated"
+    );
+
+    m.for_each(value_visitor());
+}
+
 BOOST_AUTO_TEST_CASE(mpxx_msg)
 {
     msg_type m(42, "a message");
 
     BOOST_CHECK_MESSAGE(
         m.id == 42 && m.str == "a message",
-        "access values by fields"
+        "msg access values by fields"
     );
 
     auto t = m(m.id_tag, m.str_tag);
 
     BOOST_CHECK_MESSAGE(
         std::get<0>(t) == 42 && std::get<1>(t) == "a message",
-        "access values by tags"
+        "msg access values by tags"
     );
 
     m.str = "another message";
 
     BOOST_CHECK_MESSAGE(
         std::get<0>(t) == 42 && std::get<1>(t) == "another message",
-        "reference updated"
+        "msg reference updated"
     );
 
     m.for_each(value_visitor());
 }
 
-// BOOST_AUTO_TEST_CASE(mpxx_msg_pack_unpack)
-// {
-//     msg_type m(42, "a message");
+BOOST_AUTO_TEST_CASE(mpxx_msg_pack_unpack)
+{
+    msg_type m(42, "a message");
 
-//     msgpack::sbuffer sbuf;
-//     msgpack::pack(sbuf, m);
+    msgpack::sbuffer sbuf;
+    msgpack::pack(sbuf, m);
 
-//     msgpack::unpacked u;
-//     msgpack::unpack(&u, sbuf.data(), sbuf.size());
+    msgpack::unpacked u;
+    msgpack::unpack(&u, sbuf.data(), sbuf.size());
 
-//     msg_type rm;
-//     msgpack::object obj = u.get();
-//     obj.convert(&rm);
+    msg_type rm;
+    msgpack::object obj = u.get();
+    obj.convert(&rm);
 
-//     BOOST_CHECK_MESSAGE(
-//         rm.id == 42 && rm.str == "a message",
-//         "access values by fields"
-//     );
-// }
+    BOOST_CHECK_MESSAGE(
+        rm.id == 42 && rm.str == "a message",
+        "access values by fields"
+    );
+}
 
-// BOOST_AUTO_TEST_CASE(mpxx_msg_dump)
-// {
-//     msg_type m(42, "a message");
+BOOST_AUTO_TEST_CASE(mpxx_msg_dump)
+{
+    msg_type m(42, "a message");
 
-//     std::ostringstream oss;
-//     oss << m;
+    std::ostringstream oss;
+    oss << m;
 
-//     BOOST_CHECK_MESSAGE(
-//         oss.str() == "42,a message",
-//         "dump to stream"
-//     );
-// }
+    BOOST_CHECK_MESSAGE(
+        oss.str() == "42,a message",
+        "dump to stream"
+    );
+}
 
 BOOST_AUTO_TEST_CASE(mpxx_intersect)
 {
@@ -113,5 +139,27 @@ BOOST_AUTO_TEST_CASE(mpxx_intersect)
     mstruct2 m2(1234, 42.43);
     mstruct3 m3(4567, false, 84.84, "a name");
 
-    m1.update(m2);
+    m1 << m2;
+
+    BOOST_CHECK_MESSAGE(
+        m1.avg == m2.avg && m1.avg == 42.43,
+        "common field updated"
+    );
+
+    BOOST_CHECK_MESSAGE(
+        m1.valid == true,
+        "other field untouched"
+    );
+
+    m3 << m1;
+
+    BOOST_CHECK_MESSAGE(
+        m3.valid && m3.avg == 42.43,
+        "common fields updated"
+    );
+
+    BOOST_CHECK_MESSAGE(
+        m3.counter == 4567 && m3.label == "a name",
+        "other fields untouched"
+    );
 }
