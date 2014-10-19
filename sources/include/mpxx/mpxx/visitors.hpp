@@ -8,8 +8,16 @@
 
 namespace mpxx {
 
+/// @file
+///
+/// standard mstruct visitors
+/// @anchor visit_tags Visit tags
+
+/// Visit by field value
 struct value_visit {};
+/// Visit by field position
 struct pos_visit {};
+/// Visit by field value and position
 struct value_pos_visit {};
 
 template <

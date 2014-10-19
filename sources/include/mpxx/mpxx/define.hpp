@@ -11,6 +11,10 @@
 #include <boost/preprocessor/facilities/expand.hpp>
 #include <boost/preprocessor/facilities/identity.hpp>
 
+/// @file
+///
+/// Message and structure definition macros
+
 // Preprocessor boilerplate stolen from boost::fusion::adapt_struct
 #define MPXX_TESC_0(X, Y) \
     ((X, Y)) MPXX_TESC_1
@@ -134,11 +138,35 @@ struct NAME : BASE<\
     BOOST_PP_SEQ_FOR_EACH(MPXX_DEFINE_EXT_FIELD_TAG, ~, FIELDS) \
 };
 
+/// @brief Defines a set of mstruct fields to be shared by several mstructs of msgs
+/// @hideinitializer
+/// @param FIELDS a preprocessor sequence of field definitions
+/// @note There's no comma between field definitions
+/// @par Example
+/// @code
+/// MPXX_FIELDS(
+///     (std::size_t, id)
+///     (std::string, label)
+/// );
+/// @endcode
 #define MPXX_FIELDS(FIELDS) \
     MPXX_DEFINE_FIELDS( \
         BOOST_PP_CAT(MPXX_TESC_0 FIELDS,_END) \
     )
 
+/// @brief Defines an mstruct type with the specified fields
+/// @hideinitializer
+/// @param NAME mstruct type name
+/// @param FIELDS a preprocessor sequence of field definitions
+/// @note There's no comma between field definitions
+/// @par Example
+/// @code
+/// MPXX_STRUCT(
+///     my_struct,
+///     (std::size_t, id)
+///     (std::string, label)
+/// );
+/// @endcode
 #define MPXX_STRUCT(NAME,FIELDS) \
     MPXX_DEFINE_BASE( \
         mpxx::mstruct, \
@@ -146,6 +174,24 @@ struct NAME : BASE<\
         BOOST_PP_CAT(MPXX_TESC_0 FIELDS,_END) \
     )
 
+/// @brief Defines an mstruct type with the specified predefined fields
+/// @hideinitializer
+/// @param NAME mstruct type name
+/// @param FIELDS a preprocessor sequence of already defined field types
+/// @note There's no comma between field definitions
+/// @par Example
+/// @code
+/// MPXX_FIELDS(
+///     (std::size_t, id)
+///     (std::string, label)
+/// );
+///
+/// MPXX_STRUCT_EXT_FIELDS(
+///     my_struct,
+///     (id)
+///     (label)
+/// );
+/// @endcode
 #define MPXX_STRUCT_EXT_FIELDS(NAME, FIELDS) \
     MPXX_DEFINE_BASE_EXT_FIELDS( \
         mpxx::mstruct, \
@@ -153,30 +199,24 @@ struct NAME : BASE<\
         BOOST_PP_CAT(MPXX_ESC_0 FIELDS,_END) \
     )
 
+/// @brief Defines an msg (mstruct with MessagePack support) type with the specified fields
+/// @hideinitializer
+/// @param NAME message type name
+/// @param FIELDS a preprocessor sequence of field definitions
+/// @note There's no comma between field definitions
+/// @par Example
+/// @code
+/// MPXX_MSG(
+///     my_msg,
+///     (std::size_t, id)
+///     (std::string, label)
+/// );
+/// @endcode
 #define MPXX_MSG(NAME, FIELDS) \
     MPXX_DEFINE_BASE( \
         mpxx::msg, \
         NAME, \
         BOOST_PP_CAT(MPXX_TESC_0 FIELDS,_END) \
     )
-
-#ifdef MPXX_DEBUG
-MPXX_FIELDS(
-    (std::size_t, toto)
-    (std::string, titi)
-);
-
-MPXX_STRUCT_EXT_FIELDS(
-    struct_type,
-    (toto)
-    (titi)
-);
-
-MPXX_MSG(
-    msg_type,
-    (int, id)
-    (std::string, str)
-);
-#endif
 
 #endif // __MPXX_DEFINE_H__
