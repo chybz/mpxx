@@ -48,12 +48,21 @@ struct mstruct : Fields...
     /// Use default constructor
     mstruct() = default;
     /// Use default copy constructor
-    mstruct(const this_type& other) = default;
+    mstruct(const this_type& other)
+    { *this = other; }
 
     /// Constructor using pack of field value types (POD types, ...)
     constexpr mstruct(typename Fields::type&&... v)
     : Fields{v}...
     {}
+
+
+    this_type& operator=(const this_type& other)
+    {
+        update(tags_tuple(), other);
+
+        return *this;
+    }
 
     /// Sets values for all shared fields between this struct
     /// and other.
