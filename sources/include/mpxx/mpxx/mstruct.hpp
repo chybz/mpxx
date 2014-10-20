@@ -75,73 +75,6 @@ struct mstruct : Fields...
     }
 
     /// Obtain a tuple of references to field values looked up using the
-    /// specified Tags tuple
-    ///
-    /// @tparam Tags pack of tag types
-    /// @param t tuple of tags
-    /// @returns tuple of value references
-    ///
-    /// @par Example
-    /// @code
-    /// auto t = m(std::tuple<field1_tag_type, field5_tag_type>());
-    ///
-    /// std::get<0>(t) = a_value;
-    /// std::cout << m.field1 << std::endl;
-    /// @endcode
-    template <typename... Tags>
-    std::tuple<
-        typename mpxx::tuple_element<
-            Tags,
-            values_tuple,
-            tags_tuple
-        >::type&...
-    >
-    operator()(const std::tuple<Tags...>& t)
-    {
-        return std::tie(
-            mpxx::tuple_element<
-                Tags,
-                fields_tuple,
-                tags_tuple
-            >::type::value()...
-        );
-    }
-
-    /// Obtain a tuple of const references to field values looked up using the
-    /// specified Tags tuple
-    ///
-    /// @tparam Tags pack of tag types
-    /// @param t tuple of tags
-    /// @returns tuple of const value references
-    ///
-    /// @par Example
-    /// @code
-    /// auto t = m(std::tuple<field1_tag_type, field5_tag_type>());
-    ///
-    /// std::cout << std::get<0>(t) << std::endl;
-    /// @endcode
-    template <typename... Tags>
-    std::tuple<
-        const typename mpxx::tuple_element<
-            Tags,
-            values_tuple,
-            tags_tuple
-        >::type&...
-    >
-    operator()(const std::tuple<Tags...>& t) const
-    {
-        return std::make_tuple(
-            std::cref(
-                mpxx::tuple_element<
-                    Tags,
-                    fields_tuple,
-                    tags_tuple
-                >::type::value()
-            )...
-        );
-    }
-
-    /// Obtain a tuple of references to field values looked up using the
     /// specified Tags pack
     ///
     /// @tparam Tags pack of tag types
@@ -317,7 +250,13 @@ struct mstruct : Fields...
 private:
     friend mpxx::access;
 
-    template <typename... Tags, typename... OtherFields>
+    template <
+        typename... Tags,
+        typename... OtherFields,
+        typename Enable = typename std::enable_if<
+            mpxx::all_base_of<mpxx::tag_base, Tags...>::value
+        >::type
+    >
     void update(
         const std::tuple<Tags...>& tags,
         const mstruct<OtherFields...>& other
@@ -329,7 +268,7 @@ private:
                 fields_tuple,
                 tags_tuple
             >::type::value()...
-        ) = other(tags);
+        ) = other(Tags()...);
     }
 
     template <std::size_t I, typename F>
