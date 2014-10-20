@@ -72,6 +72,10 @@ BOOST_AUTO_TEST_CASE(mpxx_mstruct)
     );
 
     m.for_each(value_visitor());
+
+    mstruct1 m2(true, 84.84);
+
+    m = m2;
 }
 
 BOOST_AUTO_TEST_CASE(mpxx_msg)
