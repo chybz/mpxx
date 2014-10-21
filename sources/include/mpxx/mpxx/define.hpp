@@ -33,20 +33,49 @@
 #define MPXX_DEFINE_COMMON_FIELD(TYPE, NAME) \
 typedef \
     BOOST_PP_CAT(NAME, _field)< \
-        TYPE, \
-        BOOST_PP_CAT(NAME, _tag_type) \
+        TYPE \
     > BOOST_PP_CAT(NAME, _field_type);
 
 #define MPXX_DEFINE_FIELD_STRUCT(TYPE, NAME) \
-struct BOOST_PP_CAT(NAME, _tag_type) : mpxx::tag_base {}; \
-\
-template <typename Type, typename Tag> \
+template <typename Type> \
 struct BOOST_PP_CAT(NAME, _field) \
 { \
+    typedef BOOST_PP_CAT(NAME, _field) this_type; \
     typedef Type type; \
-    typedef Tag tag; \
     \
+    struct BOOST_PP_CAT(NAME, _tag_type) : mpxx::tag_base {}; \
+    \
+    typedef BOOST_PP_CAT(NAME, _tag_type) tag_type; \
+    \
+    const tag_type BOOST_PP_CAT(NAME, _tag) = {}; \
     type NAME; \
+    \
+    constexpr BOOST_PP_CAT(NAME, _field)() \
+    {} \
+    \
+    BOOST_PP_CAT(NAME, _field)(const this_type& other) \
+    : NAME(other.NAME) \
+    {} \
+    \
+    BOOST_PP_CAT(NAME, _field)(this_type&& other) \
+    : NAME(std::move(other.NAME)) \
+    {} \
+    \
+    constexpr BOOST_PP_CAT(NAME, _field)(type&& v) \
+    : NAME{std::forward<type>(v)} \
+    {} \
+    \
+    this_type& operator=(const this_type& other) \
+    { \
+        NAME = other.NAME; \
+        return *this; \
+    } \
+    \
+    this_type& operator=(this_type&& other) \
+    { \
+        NAME = std::move(other.NAME); \
+        return *this; \
+    } \
     \
     constexpr static const char* name() \
     { return BOOST_PP_STRINGIZE(NAME); } \
@@ -75,35 +104,10 @@ struct BOOST_PP_CAT(NAME, _field) \
         BOOST_PP_TUPLE_ELEM(2, 1, FIELD) \
     )
 
-#define MPXX_DEFINE_FIELD_TAG(R, DATA, FIELD) \
-    const BOOST_PP_CAT( \
-        BOOST_PP_TUPLE_ELEM(2, 1, FIELD), \
-        _tag_type \
-    ) BOOST_PP_CAT( \
-        BOOST_PP_TUPLE_ELEM(2, 1, FIELD), \
-        _tag \
-    ) = BOOST_PP_CAT( \
-        BOOST_PP_TUPLE_ELEM(2, 1, FIELD), \
-        _tag_type \
-    )();
-
-#define MPXX_DEFINE_EXT_FIELD_TAG(R, DATA, FIELD) \
-    const BOOST_PP_CAT( \
-        BOOST_PP_EXPAND FIELD, \
-        _tag_type \
-    ) BOOST_PP_CAT( \
-        BOOST_PP_EXPAND FIELD, \
-        _tag \
-    ) = BOOST_PP_CAT( \
-        BOOST_PP_EXPAND FIELD, \
-        _tag_type \
-    )();
-
 #define MPXX_MAKE_FIELD(R, DATA, I, FIELD) \
     BOOST_PP_COMMA_IF(I) \
     BOOST_PP_CAT(BOOST_PP_TUPLE_ELEM(2, 1, FIELD), _field)<\
-        BOOST_PP_TUPLE_ELEM(2, 0, FIELD),\
-        BOOST_PP_CAT(BOOST_PP_TUPLE_ELEM(2, 1, FIELD), _tag_type) \
+        BOOST_PP_TUPLE_ELEM(2, 0, FIELD) \
     >
 
 #define MPXX_MAKE_EXT_FIELD(R, DATA, I, FIELD) \
@@ -115,28 +119,14 @@ struct BOOST_PP_CAT(NAME, _field) \
 
 #define MPXX_DEFINE_BASE(BASE, NAME, FIELDS) \
     BOOST_PP_SEQ_FOR_EACH(MPXX_DEFINE_FIELD, 0, FIELDS) \
-struct NAME : BASE<\
+typedef BASE< \
     BOOST_PP_SEQ_FOR_EACH_I(MPXX_MAKE_FIELD, NAME, FIELDS) \
-> \
-{ \
-    typedef BASE<\
-        BOOST_PP_SEQ_FOR_EACH_I(MPXX_MAKE_FIELD, NAME, FIELDS) \
-    > base_type; \
-    using base_type::base_type; \
-    BOOST_PP_SEQ_FOR_EACH(MPXX_DEFINE_FIELD_TAG, ~, FIELDS) \
-};
+> NAME;
 
 #define MPXX_DEFINE_BASE_EXT_FIELDS(BASE, NAME, FIELDS) \
-struct NAME : BASE<\
+typedef BASE< \
     BOOST_PP_SEQ_FOR_EACH_I(MPXX_MAKE_EXT_FIELD, NAME, FIELDS) \
-> \
-{ \
-    typedef BASE<\
-        BOOST_PP_SEQ_FOR_EACH_I(MPXX_MAKE_EXT_FIELD, NAME, FIELDS) \
-    > base_type; \
-    using base_type::base_type; \
-    BOOST_PP_SEQ_FOR_EACH(MPXX_DEFINE_EXT_FIELD_TAG, ~, FIELDS) \
-};
+> NAME;
 
 /// @brief Defines a set of mstruct fields to be shared by several mstructs of msgs
 /// @hideinitializer
@@ -243,5 +233,20 @@ struct NAME : BASE<\
         NAME, \
         BOOST_PP_CAT(MPXX_ESC_0 FIELDS,_END) \
     )
+
+#ifdef MPXX_DEBUG
+MPXX_FIELDS(
+    (std::size_t, counter)
+    (bool, valid)
+    (std::string, label)
+    (double, avg)
+);
+
+MPXX_STRUCT_EXT_FIELDS(
+    mstruct1,
+    (valid)
+    (avg)
+);
+#endif // MPXX_DEBUG
 
 #endif // __MPXX_DEFINE_H__

@@ -73,9 +73,31 @@ BOOST_AUTO_TEST_CASE(mpxx_mstruct)
 
     m.for_each(value_visitor());
 
-    mstruct1 m2(true, 84.84);
+    mstruct1 m2(false, 84.84);
 
     m = m2;
+
+    BOOST_CHECK_MESSAGE(
+        m.valid == false && m.avg == 84.84,
+        "mstruct assign"
+    );
+
+    mstruct1 mc(m);
+
+    BOOST_CHECK_MESSAGE(
+        mc.valid == false && mc.avg == 84.84,
+        "mstruct copy constructor"
+    );
+
+    mc.valid = true;
+    mc.avg = 56.23;
+
+    m = std::move(mc);
+
+    BOOST_CHECK_MESSAGE(
+        m.valid == true && m.avg == 56.23,
+        "mstruct move assign"
+    );
 }
 
 BOOST_AUTO_TEST_CASE(mpxx_msg)
@@ -143,7 +165,7 @@ BOOST_AUTO_TEST_CASE(mpxx_intersect)
     mstruct2 m2(1234, 42.43);
     mstruct3 m3(4567, false, 84.84, "a name");
 
-    m1 << m2;
+    m1 = m2;
 
     BOOST_CHECK_MESSAGE(
         m1.avg == m2.avg && m1.avg == 42.43,
@@ -155,7 +177,7 @@ BOOST_AUTO_TEST_CASE(mpxx_intersect)
         "other field untouched"
     );
 
-    m3 << m1;
+    m3 = m1;
 
     BOOST_CHECK_MESSAGE(
         m3.valid && m3.avg == 42.43,

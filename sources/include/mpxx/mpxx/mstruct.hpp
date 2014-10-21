@@ -34,7 +34,7 @@ struct mstruct : Fields...
     /// Tuple of field value types
     typedef std::tuple<typename Fields::type...> values_tuple;
     /// Tuple of field tag types
-    typedef std::tuple<typename Fields::tag...> tags_tuple;
+    typedef std::tuple<typename Fields::tag_type...> tags_tuple;
     /// Type of lookup indices to access fields by index
     typedef typename mpxx::make_tuple_indices<
         sizeof...(Fields)
@@ -53,16 +53,8 @@ struct mstruct : Fields...
 
     /// Constructor using pack of field value types (POD types, ...)
     constexpr mstruct(typename Fields::type&&... v)
-    : Fields{v}...
+    : Fields{std::forward<typename Fields::type>(v)}...
     {}
-
-
-    this_type& operator=(const this_type& other)
-    {
-        update(tags_tuple(), other);
-
-        return *this;
-    }
 
     /// Sets values for all shared fields between this struct
     /// and other.
@@ -71,7 +63,7 @@ struct mstruct : Fields...
     /// @tparam OtherFields type pack of other mstruct fields
     /// @param other mstruct to update from
     template <typename... OtherFields>
-    this_type& operator<<(const mstruct<OtherFields...>& other)
+    this_type& operator=(const mstruct<OtherFields...>& other)
     {
         typedef typename mpxx::intersect_type_seq<
             tags_tuple,
