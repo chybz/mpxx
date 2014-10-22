@@ -4,6 +4,7 @@
 #include <boost/preprocessor/cat.hpp>
 #include <boost/preprocessor/tuple.hpp>
 #include <boost/preprocessor/stringize.hpp>
+#include <boost/preprocessor/expand.hpp>
 #include <boost/preprocessor/punctuation/comma_if.hpp>
 
 #define MPXX_DEFINE_COMMON_FIELD(TYPE, NAME) \

@@ -4,6 +4,7 @@
 #include <boost/preprocessor/cat.hpp>
 
 #include <mpxx/macros/define_base.hpp>
+#include <mpxx/macros/escape.hpp>
 
 /// @file
 ///
