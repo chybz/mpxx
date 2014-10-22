@@ -163,8 +163,6 @@ BOOST_AUTO_TEST_CASE(mpxx_msg)
 
     m = std::make_tuple(84, "foo");
 
-    std::cout << m.id << ", " << m.str << std::endl;
-
     BOOST_CHECK_MESSAGE(
         m.id == 84 && m.str == "foo",
         "msg assign via tuple"
