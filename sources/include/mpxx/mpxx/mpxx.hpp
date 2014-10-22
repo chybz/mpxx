@@ -18,14 +18,22 @@ struct msg : mstruct<Fields...>
 {
     typedef mstruct<Fields...> base_type;
     typedef msg<Fields...> this_type;
+    typedef typename base_type::values_tuple values_tuple;
 
     using base_type::base_type;
+
 
     template <template <typename...> class Other, typename... OtherFields>
     this_type& operator=(const Other<OtherFields...>& other)
     {
-
         base_type::operator=(other);
+
+        return *this;
+    }
+
+    this_type& operator=(values_tuple&& vt)
+    {
+        base_type::operator=(std::forward<values_tuple>(vt));
 
         return *this;
     }

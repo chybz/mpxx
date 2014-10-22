@@ -18,6 +18,7 @@ namespace mpxx {
 
 /// Base tag for field tags
 struct tag_base {};
+struct mstruct_base {};
 
 /// Self-aware struct-like type (see <a href="http://duriansoftware.com/joe/Self-aware-struct-like-types-in-C++11.html">Self-aware struct-like types in C++11</a>).
 ///
@@ -25,7 +26,7 @@ struct tag_base {};
 ///
 /// @tparam Fields pack of field types
 template <typename ...Fields>
-struct mstruct : Fields...
+struct mstruct : mstruct_base, Fields...
 {
     /// Commodity type for this mstruct
     typedef mstruct<Fields...> this_type;
@@ -36,12 +37,7 @@ struct mstruct : Fields...
     /// Tuple of field tag types
     typedef std::tuple<typename Fields::tag_type...> tags_tuple;
     /// Type of lookup indices to access fields by index
-    typedef typename mpxx::make_tuple_indices<
-        sizeof...(Fields)
-    >::type indices_type;
 
-    /// Lookup indices to access fields by index
-    static constexpr indices_type indices = indices_type();
     /// Count of fields
     static constexpr std::size_t field_count = sizeof...(Fields);
 
@@ -62,7 +58,13 @@ struct mstruct : Fields...
     ///
     /// @tparam OtherFields type pack of other mstruct fields
     /// @param other mstruct to update from
-    template <template <typename...> class Other, typename... OtherFields>
+    template <
+        template <typename...> class Other,
+        typename... OtherFields,
+        typename Enable = typename std::enable_if<
+            std::is_base_of<mpxx::mstruct_base, Other<OtherFields...>>::value
+        >::type
+    >
     this_type& operator=(const Other<OtherFields...>& other)
     {
         typedef typename mpxx::intersect_type_seq<
@@ -71,6 +73,21 @@ struct mstruct : Fields...
         >::type common_tags_tuple;
 
         update(common_tags_tuple(), other);
+
+        return *this;
+    }
+
+    /// Sets values from a tuple
+    ///
+    /// @tparam OtherFields type pack of other mstruct fields
+    /// @param other mstruct to update from
+    this_type& operator=(values_tuple&& vt)
+    {
+        typedef typename mpxx::make_tuple_indices<
+            sizeof...(Fields)
+        >::type indices;
+
+        update(indices(), std::forward<values_tuple>(vt));
 
         return *this;
     }
@@ -272,6 +289,10 @@ private:
             >::type::value()...
         ) = other(Tags()...);
     }
+
+    template <std::size_t... Indices>
+    void update(const mpxx::tuple_indices<Indices...> , values_tuple&& vt)
+    { std::tie(Fields::value()...) = vt; }
 
     template <std::size_t I, typename F>
     void operator()(F&& f, value_visit tag)
