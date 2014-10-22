@@ -6,6 +6,7 @@
 #include <mpxx/unit_test.hpp>
 #include <mpxx/mpxx.hpp>
 
+// Standalone message with internal fields
 MPXX_MSG(
     msg_type,
     (int, id)
@@ -14,6 +15,7 @@ MPXX_MSG(
 
 namespace fields {
 
+// Define some field types in a common namespace
 MPXX_FIELDS(
     (std::size_t, counter)
     (bool, valid)
@@ -24,6 +26,7 @@ MPXX_FIELDS(
 
 } // namespace fields
 
+// Defiene a struct using predefined field types
 MPXX_STRUCT_EXT_FIELDS(
     mstruct1,
     (fields::valid)
@@ -33,6 +36,7 @@ MPXX_STRUCT_EXT_FIELDS(
 namespace structs {
 
 struct foo {
+    // Define structss using predefined field types
     MPXX_STRUCT_EXT_FIELDS(
         mstruct2,
         (::fields::counter)
@@ -54,6 +58,7 @@ struct foo {
 
 } // namespace structs
 
+// Define messages using predefined field types
 MPXX_MSG_EXT_FIELDS(
     msg1,
     (fields::valid)
@@ -93,6 +98,7 @@ BOOST_AUTO_TEST_CASE(mpxx_mstruct)
         "mstruct access values by fields"
     );
 
+    // Grab field values in a tuple, using field tags
     auto t = m(m.valid_tag, m.avg_tag);
 
     BOOST_CHECK_MESSAGE(
@@ -161,6 +167,7 @@ BOOST_AUTO_TEST_CASE(mpxx_msg)
 
     m.for_each(value_visitor());
 
+    // Assign message vaules via a tuple
     m = std::make_tuple(84, "foo");
 
     BOOST_CHECK_MESSAGE(
@@ -204,6 +211,7 @@ BOOST_AUTO_TEST_CASE(mpxx_msg_dump)
 
 BOOST_AUTO_TEST_CASE(mpxx_struct_intersect)
 {
+    // Check various use cases
     mstruct1 m1(true, 42.42);
     structs::foo f;
 
