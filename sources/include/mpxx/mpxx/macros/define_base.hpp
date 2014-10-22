@@ -1,0 +1,19 @@
+#ifndef __MPXX_MACROS_DEFINE_BASE_H__
+#define __MPXX_MACROS_DEFINE_BASE_H__
+
+#include <boost/preprocessor/seq.hpp>
+
+#include <mpxx/macros/fields.hpp>
+
+#define MPXX_DEFINE_BASE(BASE, NAME, FIELDS) \
+    BOOST_PP_SEQ_FOR_EACH(MPXX_DEFINE_FIELD, 0, FIELDS) \
+typedef BASE< \
+    BOOST_PP_SEQ_FOR_EACH_I(MPXX_MAKE_FIELD, NAME, FIELDS) \
+> NAME;
+
+#define MPXX_DEFINE_BASE_EXT_FIELDS(BASE, NAME, FIELDS) \
+typedef BASE< \
+    BOOST_PP_SEQ_FOR_EACH_I(MPXX_MAKE_EXT_FIELD, NAME, FIELDS) \
+> NAME;
+
+#endif // __MPXX_MACROS_DEFINE_BASE_H__

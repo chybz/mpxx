@@ -2,133 +2,14 @@
 #define __MPXX_DEFINE_H__
 
 #include <boost/preprocessor/cat.hpp>
-#include <boost/preprocessor/empty.hpp>
-#include <boost/preprocessor/seq.hpp>
-#include <boost/preprocessor/tuple.hpp>
-#include <boost/preprocessor/stringize.hpp>
-#include <boost/preprocessor/punctuation/comma_if.hpp>
-#include <boost/preprocessor/control/if.hpp>
-#include <boost/preprocessor/facilities/expand.hpp>
-#include <boost/preprocessor/facilities/identity.hpp>
+
+#include <mpxx/macros/define_base.hpp>
 
 /// @file
 ///
 /// Message and structure definition macros
 
-// Preprocessor boilerplate stolen from boost::fusion::adapt_struct
-#define MPXX_TESC_0(X, Y) \
-    ((X, Y)) MPXX_TESC_1
-#define MPXX_TESC_1(X, Y) \
-    ((X, Y)) MPXX_TESC_0
-#define MPXX_TESC_0_END
-#define MPXX_TESC_1_END
-
-#define MPXX_ESC_0(X) \
-    ((X)) MPXX_ESC_1
-#define MPXX_ESC_1(X) \
-    ((X)) MPXX_ESC_0
-#define MPXX_ESC_0_END
-#define MPXX_ESC_1_END
-
-#define MPXX_DEFINE_COMMON_FIELD(TYPE, NAME) \
-typedef \
-    BOOST_PP_CAT(NAME, _field)< \
-        TYPE \
-    > BOOST_PP_CAT(NAME, _field_type);
-
-#define MPXX_DEFINE_FIELD_STRUCT(TYPE, NAME) \
-template <typename Type> \
-struct BOOST_PP_CAT(NAME, _field) \
-{ \
-    typedef BOOST_PP_CAT(NAME, _field) this_type; \
-    typedef Type type; \
-    \
-    struct BOOST_PP_CAT(NAME, _tag_type) : mpxx::tag_base {}; \
-    \
-    typedef BOOST_PP_CAT(NAME, _tag_type) tag_type; \
-    \
-    const tag_type BOOST_PP_CAT(NAME, _tag) = {}; \
-    type NAME; \
-    \
-    constexpr BOOST_PP_CAT(NAME, _field)() \
-    {} \
-    \
-    BOOST_PP_CAT(NAME, _field)(const this_type& other) \
-    : NAME(other.NAME) \
-    {} \
-    \
-    BOOST_PP_CAT(NAME, _field)(this_type&& other) \
-    : NAME(std::move(other.NAME)) \
-    {} \
-    \
-    constexpr BOOST_PP_CAT(NAME, _field)(type&& v) \
-    : NAME{std::forward<type>(v)} \
-    {} \
-    \
-    this_type& operator=(const this_type& other) \
-    { \
-        NAME = other.NAME; \
-        return *this; \
-    } \
-    \
-    this_type& operator=(this_type&& other) \
-    { \
-        NAME = std::move(other.NAME); \
-        return *this; \
-    } \
-    \
-    constexpr static const char* name() \
-    { return BOOST_PP_STRINGIZE(NAME); } \
-    \
-    type& value() & \
-    { return NAME; } \
-    \
-    const type& value() const& \
-    { return NAME; } \
-    \
-    type&& value() && \
-    { return NAME; } \
-};
-
-#define MPXX_DEFINE_FIELD(R, COMMON, FIELD) \
-    MPXX_DEFINE_FIELD_STRUCT( \
-        BOOST_PP_TUPLE_ELEM(2, 0, FIELD), \
-        BOOST_PP_TUPLE_ELEM(2, 1, FIELD) \
-    ) \
-    BOOST_PP_IF( \
-        COMMON, \
-        MPXX_DEFINE_COMMON_FIELD, \
-        BOOST_PP_TUPLE_EAT(2) \
-    )( \
-        BOOST_PP_TUPLE_ELEM(2, 0, FIELD), \
-        BOOST_PP_TUPLE_ELEM(2, 1, FIELD) \
-    )
-
-#define MPXX_MAKE_FIELD(R, DATA, I, FIELD) \
-    BOOST_PP_COMMA_IF(I) \
-    BOOST_PP_CAT(BOOST_PP_TUPLE_ELEM(2, 1, FIELD), _field)<\
-        BOOST_PP_TUPLE_ELEM(2, 0, FIELD) \
-    >
-
-#define MPXX_MAKE_EXT_FIELD(R, DATA, I, FIELD) \
-    BOOST_PP_COMMA_IF(I) \
-    BOOST_PP_CAT(BOOST_PP_EXPAND FIELD, _field_type)
-
-#define MPXX_DEFINE_FIELDS(FIELDS) \
-    BOOST_PP_SEQ_FOR_EACH(MPXX_DEFINE_FIELD, 1, FIELDS)
-
-#define MPXX_DEFINE_BASE(BASE, NAME, FIELDS) \
-    BOOST_PP_SEQ_FOR_EACH(MPXX_DEFINE_FIELD, 0, FIELDS) \
-typedef BASE< \
-    BOOST_PP_SEQ_FOR_EACH_I(MPXX_MAKE_FIELD, NAME, FIELDS) \
-> NAME;
-
-#define MPXX_DEFINE_BASE_EXT_FIELDS(BASE, NAME, FIELDS) \
-typedef BASE< \
-    BOOST_PP_SEQ_FOR_EACH_I(MPXX_MAKE_EXT_FIELD, NAME, FIELDS) \
-> NAME;
-
-/// @brief Defines a set of mstruct fields to be shared by several mstructs of msgs
+/// @brief Defines a set of fields to be shared by several mstructs or msgs
 /// @hideinitializer
 /// @param FIELDS a preprocessor sequence of field definitions
 /// @note There's no comma between field definitions
