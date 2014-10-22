@@ -21,6 +21,15 @@ struct msg : mstruct<Fields...>
 
     using base_type::base_type;
 
+    template <template <typename...> class Other, typename... OtherFields>
+    this_type& operator=(const Other<OtherFields...>& other)
+    {
+
+        base_type::operator=(other);
+
+        return *this;
+    }
+
     template <typename Packer>
     void msgpack_pack(Packer& p) const
     {

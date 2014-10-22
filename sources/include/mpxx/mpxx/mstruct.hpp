@@ -62,12 +62,12 @@ struct mstruct : Fields...
     ///
     /// @tparam OtherFields type pack of other mstruct fields
     /// @param other mstruct to update from
-    template <typename... OtherFields>
-    this_type& operator=(const mstruct<OtherFields...>& other)
+    template <template <typename...> class Other, typename... OtherFields>
+    this_type& operator=(const Other<OtherFields...>& other)
     {
         typedef typename mpxx::intersect_type_seq<
             tags_tuple,
-            typename mstruct<OtherFields...>::tags_tuple
+            typename Other<OtherFields...>::tags_tuple
         >::type common_tags_tuple;
 
         update(common_tags_tuple(), other);
@@ -253,6 +253,7 @@ private:
 
     template <
         typename... Tags,
+        template <typename...> class Other,
         typename... OtherFields,
         typename Enable = typename std::enable_if<
             mpxx::all_base_of<mpxx::tag_base, Tags...>::value
@@ -260,7 +261,7 @@ private:
     >
     void update(
         const std::tuple<Tags...>& tags,
-        const mstruct<OtherFields...>& other
+        const Other<OtherFields...>& other
     )
     {
         std::tie(

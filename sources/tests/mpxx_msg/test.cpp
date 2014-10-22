@@ -12,31 +12,67 @@ MPXX_MSG(
     (std::string, str)
 );
 
+namespace fields {
+
 MPXX_FIELDS(
     (std::size_t, counter)
     (bool, valid)
     (std::string, label)
+    (std::string, label2)
     (double, avg)
 );
 
+} // namespace fields
+
 MPXX_STRUCT_EXT_FIELDS(
     mstruct1,
-    (valid)
-    (avg)
+    (fields::valid)
+    (fields::avg)
 );
 
-MPXX_STRUCT_EXT_FIELDS(
-    mstruct2,
-    (counter)
-    (avg)
+namespace structs {
+
+struct foo {
+    MPXX_STRUCT_EXT_FIELDS(
+        mstruct2,
+        (::fields::counter)
+        (::fields::avg)
+    );
+
+    MPXX_STRUCT_EXT_FIELDS(
+        mstruct3,
+        (fields::counter)
+        (fields::valid)
+        (fields::label2)
+        (fields::avg)
+        (fields::label)
+    );
+
+    mstruct2 m2;
+    mstruct3 m3;
+};
+
+} // namespace structs
+
+MPXX_MSG_EXT_FIELDS(
+    msg1,
+    (fields::valid)
+    (fields::avg)
 );
 
-MPXX_STRUCT_EXT_FIELDS(
-    mstruct3,
-    (counter)
-    (valid)
-    (avg)
-    (label)
+MPXX_MSG_EXT_FIELDS(
+    msg2,
+    (::fields::counter)
+    (::fields::avg)
+);
+
+MPXX_MSG_EXT_FIELDS(
+    msg3,
+    (fields::counter)
+    (fields::valid)
+    (fields::label2)
+    (fields::avg)
+    (fields::label)
 );
 
 struct value_visitor
@@ -159,11 +195,44 @@ BOOST_AUTO_TEST_CASE(mpxx_msg_dump)
     );
 }
 
-BOOST_AUTO_TEST_CASE(mpxx_intersect)
+BOOST_AUTO_TEST_CASE(mpxx_struct_intersect)
 {
     mstruct1 m1(true, 42.42);
-    mstruct2 m2(1234, 42.43);
-    mstruct3 m3(4567, false, 84.84, "a name");
+    structs::foo f;
+
+    f.m2 = structs::foo::mstruct2(1234, 42.43);
+    f.m3 = structs::foo::mstruct3(4567, false, "a string", 84.84, "a name");
+
+    m1 = f.m2;
+
+    BOOST_CHECK_MESSAGE(
+        m1.avg == f.m2.avg && m1.avg == 42.43,
+        "common field updated"
+    );
+
+    BOOST_CHECK_MESSAGE(
+        m1.valid == true,
+        "other field untouched"
+    );
+
+    f.m3 = m1;
+
+    BOOST_CHECK_MESSAGE(
+        f.m3.valid && f.m3.avg == 42.43,
+        "common fields updated"
+    );
+
+    BOOST_CHECK_MESSAGE(
+        f.m3.counter == 4567 && f.m3.label == "a name",
+        "other fields untouched"
+    );
+}
+
+BOOST_AUTO_TEST_CASE(mpxx_msg_intersect)
+{
+    msg1 m1(true, 42.42);
+    msg2 m2(1234, 42.43);
+    msg3 m3(4567, false, "a string", 84.84, "a name");
 
     m1 = m2;
 
