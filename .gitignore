@@ -2,4 +2,5 @@
 
 # CBUILD_GITIGNORE BEGIN
 build
+CMakeLists.txt
 # CBUILD_GITIGNORE END
