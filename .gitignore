@@ -2,7 +2,5 @@
 
 # CBUILD_GITIGNORE BEGIN
 build
-CMakeLists.txt
 .cbuild
-Makefile
 # CBUILD_GITIGNORE END
