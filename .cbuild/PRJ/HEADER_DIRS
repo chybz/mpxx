@@ -1,0 +1,3 @@
+declare -a HEADER_DIRS=(
+"/Users/chybz/dev/mpxx/sources/include/mpxx"
+)

@@ -2,5 +2,4 @@
 
 # CBUILD_GITIGNORE BEGIN
 build
-.cbuild
 # CBUILD_GITIGNORE END

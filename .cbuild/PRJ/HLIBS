@@ -1,0 +1,3 @@
+declare -A HLIB_TARGET_MAP=(
+    ["mpxx"]="1"
+)

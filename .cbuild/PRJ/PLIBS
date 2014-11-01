@@ -1,0 +1,3 @@
+declare -A PLIB_TARGET_MAP=(
+    ["mpxx"]="0"
+)

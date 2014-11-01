@@ -1,6 +1,6 @@
 include_directories(
     ../../../build/include.generated
-    ../../include/mpxx
+    ../..//Users/chybz/dev/mpxx/sources/include/mpxx
 )
 
 add_executable(

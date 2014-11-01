@@ -53,22 +53,13 @@ coverage-report:
 doc:
 	@cd build/doc && doxygen 2> doxygen.log
 
-package:
-	@cd build && ( \
-		rm -rf usr etc && \
-		make DESTDIR=packaging install && \
-		cd packaging && dpkg-buildpackage -b -uc \
-	)
 
 install:
-	@sudo dpkg -i DEBS/*.deb
+	@cd build && make DESTDIR=$(DESTDIR) install
 
-upload:
-	@cd DEBS && erepo-upload
 
 clean:
 	@rm -rf build
-	@rm -f DEBS/$(PACKAGE_NAME)*
 
 distclean: clean
 	@rm -rf .cbuild

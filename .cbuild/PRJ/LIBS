@@ -1,0 +1,3 @@
+declare -a PRJ_LIBS=(
+"mpxx"
+)

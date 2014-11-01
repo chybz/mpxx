@@ -1,0 +1,35 @@
+declare -a CB_GEN_FLAGS=(
+"-g"
+"-pipe"
+"-Wall"
+"-fvisibility=hidden"
+"-fPIC"
+"-fstack-protector-all"
+"-O3"
+"-march=native"
+)
+declare -a CB_LFLAGS=(
+"-L/usr/pkg/lib"
+)
+declare -a CB_BIN_LFLAGS=(
+)
+declare -a CB_LIB_LFLAGS=(
+)
+declare -a CB_CFLAGS=(
+"-Qunused-arguments"
+"-fcolor-diagnostics"
+"-I/usr/pkg/include"
+)
+declare -a CB_CXXFLAGS=(
+"-std=c++11"
+"-stdlib=libc++"
+"-Qunused-arguments"
+"-fcolor-diagnostics"
+"-ftemplate-depth=256"
+"-I/usr/pkg/include"
+)
+CB_CPP=/usr/bin/cpp
+CB_CC=/usr/bin/clang
+CB_CXX=/usr/bin/clang++
+CB_GCOV=
+CB_CPUS=4

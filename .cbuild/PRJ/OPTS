@@ -1,0 +1,9 @@
+declare -A PRJ_OPTS=(
+    ["std"]="c++11"
+    ["sanitizer"]="0"
+    ["profiling"]="0"
+    ["stack_protector"]="1"
+    ["ccache"]="1"
+    ["optimize"]="1"
+    ["coverage"]="0"
+)

@@ -1,0 +1,14 @@
+declare -a HEADERS=(
+"mpxx/access.hpp"
+"mpxx/define.hpp"
+"mpxx/macros/define_base.hpp"
+"mpxx/macros/escape.hpp"
+"mpxx/macros/field.hpp"
+"mpxx/macros/fields.hpp"
+"mpxx/mpxx.hpp"
+"mpxx/msgpack.hpp"
+"mpxx/mstruct.hpp"
+"mpxx/tag.hpp"
+"mpxx/tuple_utils.hpp"
+"mpxx/visitors.hpp"
+)
