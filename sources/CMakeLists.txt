@@ -61,19 +61,19 @@ install(
 )
 
 install(
-    PROGRAMS /Users/chybz/dev/mpxx/build/bin/mpxx-config
+    PROGRAMS ../build/bin/mpxx-config
     DESTINATION bin
 )
 
 add_custom_target(
     mpxx_config_man
     ALL
-    COMMAND pod2man -n mpxx-config /Users/chybz/dev/mpxx/build/bin/mpxx-config /Users/chybz/dev/mpxx/build/man/mpxx-config.1
+    COMMAND pod2man -n mpxx-config ../build/bin/mpxx-config ../build/man/mpxx-config.1
 )
 
 install(
-    DIRECTORY /Users/chybz/dev/mpxx/build/man/
-    DESTINATION share/man/man1
+    DIRECTORY ../build/man/
+    DESTINATION man/man1
     OPTIONAL
 )
 
