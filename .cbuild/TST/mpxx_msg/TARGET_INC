@@ -1,4 +1,4 @@
 declare -a TARGET_INC=(
 "../../../build/include.generated"
-"../..//Users/chybz/dev/mpxx/sources/include/mpxx"
+"../../include/mpxx"
 )
