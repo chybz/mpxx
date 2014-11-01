@@ -1,4 +1,0 @@
-declare -A PRJ_PKGS=(
-    ["msgpack-0.5.7"]="1"
-    ["boost-headers-1.55.0nb1"]="1"
-)

@@ -1,4 +1,0 @@
-declare -a TARGET_INC=(
-"../include/mpxx"
-"../../../build/include.generated"
-)
