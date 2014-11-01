@@ -2,9 +2,9 @@ cmake_minimum_required(VERSION 2.8)
 
 project(mpxx)
 
-#set(CMAKE_RULE_MESSAGES OFF)
-#set(CMAKE_COLOR_MAKEFILE OFF)
-#set(CMAKE_VERBOSE_MAKEFILE OFF)
+set(CMAKE_RULE_MESSAGES OFF)
+set(CMAKE_COLOR_MAKEFILE OFF)
+set(CMAKE_VERBOSE_MAKEFILE OFF)
 
 set(CMAKE_EXE_LINKER_FLAGS "-L/usr/pkg/lib ")
 set(CMAKE_SHARED_LINKER_FLAGS "-L/usr/pkg/lib ")
@@ -19,20 +19,20 @@ add_definitions(
     -D_FORTIFY_SOURCE=2
 )
 
-include_directories("/Users/chybz/dev/mpxx/build/include.generated")
+include_directories("../build/include.generated")
 
 install(
-    DIRECTORY "/Users/chybz/dev/mpxx/build/include.generated/"
+    DIRECTORY "../build/include.generated/"
     DESTINATION include/mpxx
 )
 
 install(
-    DIRECTORY "/Users/chybz/dev/mpxx/sources/include/mpxx/"
+    DIRECTORY "include/mpxx/"
     DESTINATION include/mpxx
 )
 
 install(
-    DIRECTORY "/Users/chybz/dev/mpxx/build/pkgconfig/"
+    DIRECTORY "../build/pkgconfig/"
     DESTINATION lib/pkgconfig
 )
 

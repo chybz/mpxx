@@ -1,7 +1,6 @@
 include_directories(
-    /Users/chybz/dev/mpxx/sources/tests/mpxx_msg
-    /Users/chybz/dev/mpxx/build/include.generated
-    /Users/chybz/dev/mpxx/sources/include/mpxx
+    ../../../build/include.generated
+    ../../include/mpxx
 )
 
 add_executable(
@@ -12,9 +11,9 @@ add_executable(
 set_target_properties(
     tst_mpxx_msg
     PROPERTIES
-    RUNTIME_OUTPUT_DIRECTORY /Users/chybz/dev/mpxx/build/t
-    RUNTIME_OUTPUT_DIRECTORY_DEBUG /Users/chybz/dev/mpxx/build/t
-    RUNTIME_OUTPUT_DIRECTORY_RELEASE /Users/chybz/dev/mpxx/build/t
+    RUNTIME_OUTPUT_DIRECTORY ../../t
+    RUNTIME_OUTPUT_DIRECTORY_DEBUG ../../t
+    RUNTIME_OUTPUT_DIRECTORY_RELEASE ../../t
     OUTPUT_NAME mpxx_msg.t
 )
 
