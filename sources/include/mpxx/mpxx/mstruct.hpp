@@ -315,15 +315,23 @@ private:
     { f(std::tuple_element<I, fields_tuple>::type::value(), I); }
 };
 
-// template <typename... Args>
-// inline
-// std::ostream&
-// operator<<(std::ostream& os, const msg<Args...>& m)
-// {
-//     m.dump(os);
+template <
+    typename MStruct,
+    typename Tag
+>
+struct value_type
+{
+    static_assert(
+        std::is_base_of<mpxx::mstruct_base, MStruct>::value,
+        "MStruct is not an mpxx::mstruct"
+    );
 
-//     return os;
-// }
+    typedef typename mpxx::tuple_element<
+        Tag,
+        typename MStruct::values_tuple,
+        typename MStruct::tags_tuple
+    >::type type;
+};
 
 } // namespace mpxx
 
