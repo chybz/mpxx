@@ -194,6 +194,18 @@ BOOST_AUTO_TEST_CASE(mpxx_msg_pack_unpack)
         rm.id == 42 && rm.str == "a message",
         "access values by fields"
     );
+
+    BOOST_CHECK_MESSAGE(
+        m == rm,
+        "messages are equal"
+    );
+
+    rm.id++;
+
+    BOOST_CHECK_MESSAGE(
+        m != rm,
+        "messages are different"
+    );
 }
 
 BOOST_AUTO_TEST_CASE(mpxx_msg_dump)

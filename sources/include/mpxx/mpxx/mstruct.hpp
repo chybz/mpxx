@@ -92,6 +92,20 @@ struct mstruct : mstruct_base, Fields...
         return *this;
     }
 
+    /// Compares two messages
+    bool operator==(const this_type& other) const
+    {
+        return
+            (*this)(typename Fields::tag_type()...)
+            ==
+            other(typename Fields::tag_type()...)
+            ;
+    }
+
+    /// Compares two messages
+    bool operator!=(const this_type& other) const
+    { return !(*this == other); }
+
     /// Obtain a tuple of references to field values looked up using the
     /// specified Tags pack
     ///
