@@ -68,18 +68,18 @@ struct visit_each_impl<0, Class, Tuple, Args...> {
     }
 };
 
-template <int Index, typename Search, typename First, typename... Types>
+template <std::size_t Index, typename Search, typename First, typename... Types>
 struct get_impl
 {
     typedef typename get_impl<Index + 1, Search, Types...>::type type;
-    static constexpr int index = Index;
+    static constexpr std::size_t index = Index;
 };
 
-template <int Index, typename Search, typename... Types>
+template <std::size_t Index, typename Search, typename... Types>
 struct get_impl<Index, Search, Search, Types...>
 {
     typedef get_impl type;
-    static constexpr int index = Index;
+    static constexpr std::size_t index = Index;
 };
 
 } // namespace detail
@@ -123,6 +123,8 @@ struct tuple_element<T, std::tuple<Types...>, std::tuple<Keys...>>
         detail::get_impl<0, T, Keys...>::type::index,
         std::tuple<Types...>
     >::type type;
+    static constexpr std::size_t index =
+        detail::get_impl<0, T, Keys...>::type::index;
 };
 
 // Tuple sequence utilities
