@@ -21,10 +21,11 @@
 ///     (std::string, label)
 /// );
 /// @endcode
-#define MPXX_FIELDS(FIELDS) \
-    MPXX_DEFINE_FIELDS( \
-        BOOST_PP_CAT(MPXX_TESC_0 FIELDS,_END) \
-    )
+#define MPXX_FIELDS(...) \
+    MPXX_ESC(__VA_ARGS__)
+    // MPXX_DEFINE_FIELDS( \
+    //     MPXX_ESC(FIELDS) \
+    // )
 
 /// @brief Defines an mstruct type with the specified fields
 /// @hideinitializer
@@ -43,7 +44,7 @@
     MPXX_DEFINE_BASE( \
         mpxx::mstruct, \
         NAME, \
-        BOOST_PP_CAT(MPXX_TESC_0 FIELDS,_END) \
+        BOOST_PP_CAT(MPXX_TESC2_0 FIELDS,_END) \
     )
 
 /// @brief Defines an mstruct type with the specified predefined fields
@@ -88,7 +89,7 @@
     MPXX_DEFINE_BASE( \
         mpxx::msg, \
         NAME, \
-        BOOST_PP_CAT(MPXX_TESC_0 FIELDS,_END) \
+        BOOST_PP_CAT(MPXX_TESC2_0 FIELDS,_END) \
     )
 
 /// @brief Defines an msg type with the specified predefined fields
@@ -118,17 +119,17 @@
 
 #ifdef MPXX_DEBUG
 MPXX_FIELDS(
-    (std::size_t, counter)
-    (bool, valid)
-    (std::string, label)
-    (double, avg)
+    (std::size_t, counter, 1234),
+    (bool, valid, false),
+    (std::string, label, "some string"),
+    (double, avg, 1.0)
 );
 
-MPXX_STRUCT_EXT_FIELDS(
-    mstruct1,
-    (valid)
-    (avg)
-);
+// MPXX_STRUCT_EXT_FIELDS(
+//     mstruct1,
+//     (valid)
+//     (avg)
+// );
 #endif // MPXX_DEBUG
 
 #endif // __MPXX_DEFINE_H__
