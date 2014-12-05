@@ -9,7 +9,7 @@
 // Standalone message with internal fields
 MPXX_MSG(
     msg_type,
-    (int, id)
+    (int, id),
     (std::string, str)
 );
 
@@ -17,19 +17,19 @@ namespace fields {
 
 // Define some field types in a common namespace
 MPXX_FIELDS(
-    (std::size_t, counter)
-    (bool, valid)
-    (std::string, label)
-    (std::string, label2)
+    (std::size_t, counter),
+    (bool, valid),
+    (std::string, label),
+    (std::string, label2),
     (double, avg)
 );
 
 } // namespace fields
 
 // Defiene a struct using predefined field types
-MPXX_STRUCT_EXT_FIELDS(
+MPXX_STRUCT(
     mstruct1,
-    (fields::valid)
+    (fields::valid),
     (fields::avg)
 );
 
@@ -37,18 +37,18 @@ namespace structs {
 
 struct foo {
     // Define structss using predefined field types
-    MPXX_STRUCT_EXT_FIELDS(
+    MPXX_STRUCT(
         mstruct2,
-        (::fields::counter)
+        (::fields::counter),
         (::fields::avg)
     );
 
-    MPXX_STRUCT_EXT_FIELDS(
+    MPXX_STRUCT(
         mstruct3,
-        (fields::counter)
-        (fields::valid)
-        (fields::label2)
-        (fields::avg)
+        (fields::counter),
+        (fields::valid),
+        (fields::label2),
+        (fields::avg),
         (fields::label)
     );
 
@@ -59,24 +59,24 @@ struct foo {
 } // namespace structs
 
 // Define messages using predefined field types
-MPXX_MSG_EXT_FIELDS(
+MPXX_MSG(
     msg1,
-    (fields::valid)
+    (fields::valid),
     (fields::avg)
 );
 
-MPXX_MSG_EXT_FIELDS(
+MPXX_MSG(
     msg2,
-    (::fields::counter)
+    (::fields::counter),
     (::fields::avg)
 );
 
-MPXX_MSG_EXT_FIELDS(
+MPXX_MSG(
     msg3,
-    (fields::counter)
-    (fields::valid)
-    (fields::label2)
-    (fields::avg)
+    (fields::counter),
+    (fields::valid),
+    (fields::label2),
+    (fields::avg),
     (fields::label)
 );
 

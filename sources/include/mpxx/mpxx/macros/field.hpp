@@ -30,6 +30,20 @@
     TPL_CAT(MPXX_FIELD_INIT_, TPL_SIZE_L(INIT))(INIT)
 
 //
+// Field default value
+//
+// MPXX_FIELD_DEFV() -->
+// MPXX_FIELD_DEFV(expr) --> expr
+//
+#define MPXX_FIELD_DEFV_0(I) \
+    throw std::runtime_error("no default value"); \
+    return *((type*) 0);
+#define MPXX_FIELD_DEFV_1(I) return I;
+
+#define MPXX_FIELD_DEFV(INIT) \
+    TPL_CAT(MPXX_FIELD_DEFV_, TPL_SIZE_L(INIT))(INIT)
+
+//
 // Field struct definition
 //
 // T    : (NAME), (CLASS, NAME)
@@ -89,6 +103,9 @@ struct MPXX_FIELD_NAME(TPL_TO_LIST(T)) \
     \
     type&& value() && \
     { return NAME; } \
+    \
+    const type& default_value() const& \
+    { MPXX_FIELD_DEFV(INIT) } \
 };
 
 //
