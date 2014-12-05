@@ -4,9 +4,9 @@
 #include <mpxx/macros/fields.hpp>
 
 #define MPXX_DEFINE_BASE(BASE, NAME, ...) \
-    TPL_FOR_EACH_S((__VA_ARGS__), MPXX_FIELD, NAME) \
+    TPL_FOR_EACH_S((__VA_ARGS__), MPXX_STRUCT_FIELD, NAME) \
 typedef BASE< \
-    TPL_FOR_EACH_L((__VA_ARGS__), MPXX_FIELD_TYPE, NAME) \
+    TPL_FOR_EACH_L((__VA_ARGS__), MPXX_STRUCT_FIELD_TYPE, NAME) \
 > NAME;
 
 #endif // __MPXX_MACROS_DEFINE_BASE_H__

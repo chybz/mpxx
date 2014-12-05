@@ -19,6 +19,6 @@
 /// );
 /// @endcode
 #define MPXX_FIELDS(...) \
-    TPL_FOR_EACH_S((__VA_ARGS__), MPXX_FIELD, _)
+    TPL_FOR_EACH_S((__VA_ARGS__), MPXX_FIELD, /* empty */)
 
 #endif // __MPXX_MACROS_FIELDS_H__
