@@ -5,7 +5,7 @@
 
 /// @file
 ///
-/// Message and structure definition macros
+/// Fields definition macros
 
 /// @brief Defines a set of fields to be shared by several mstructs or msgs
 /// @hideinitializer
@@ -19,6 +19,6 @@
 /// );
 /// @endcode
 #define MPXX_FIELDS(...) \
-    TPL_FOR_EACH_S((__VA_ARGS__), MPXX_FIELD, my_arg)
+    TPL_FOR_EACH_S((__VA_ARGS__), MPXX_FIELD, _)
 
 #endif // __MPXX_MACROS_FIELDS_H__

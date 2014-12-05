@@ -1,31 +1,13 @@
 #ifndef __MPXX_DEFINE_H__
 #define __MPXX_DEFINE_H__
 
-#include <boost/preprocessor/cat.hpp>
-
+#include <mpxx/tpl/tpl.hpp>
+#include <mpxx/macros/fields.hpp>
 #include <mpxx/macros/define_base.hpp>
-#include <mpxx/macros/escape.hpp>
 
 /// @file
 ///
 /// Message and structure definition macros
-
-/// @brief Defines a set of fields to be shared by several mstructs or msgs
-/// @hideinitializer
-/// @param FIELDS a preprocessor sequence of field definitions
-/// @note There's no comma between field definitions
-/// @par Example
-/// @code
-/// MPXX_FIELDS(
-///     (std::size_t, id)
-///     (std::string, label)
-/// );
-/// @endcode
-#define MPXX_FIELDS(...) \
-    MPXX_ESC(__VA_ARGS__)
-    // MPXX_DEFINE_FIELDS( \
-    //     MPXX_ESC(FIELDS) \
-    // )
 
 /// @brief Defines an mstruct type with the specified fields
 /// @hideinitializer
@@ -40,11 +22,11 @@
 ///     (std::string, label)
 /// );
 /// @endcode
-#define MPXX_STRUCT(NAME,FIELDS) \
+#define MPXX_STRUCT(NAME, ...) \
     MPXX_DEFINE_BASE( \
         mpxx::mstruct, \
         NAME, \
-        BOOST_PP_CAT(MPXX_TESC2_0 FIELDS,_END) \
+        __VA_ARGS__ \
     )
 
 /// @brief Defines an mstruct type with the specified predefined fields
@@ -118,7 +100,15 @@
     )
 
 #ifdef MPXX_DEBUG
-MPXX_FIELDS(
+// MPXX_FIELDS(
+//     (std::size_t, counter, 1234),
+//     (bool, valid, false),
+//     (std::string, label, "some string"),
+//     (double, avg, 1.0)
+// );
+
+MPXX_STRUCT(
+    my_struct,
     (std::size_t, counter, 1234),
     (bool, valid, false),
     (std::string, label, "some string"),

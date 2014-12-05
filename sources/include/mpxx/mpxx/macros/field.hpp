@@ -7,11 +7,6 @@ typedef \
         TYPE \
     > BOOST_PP_CAT(NAME, _field_type);
 
-#define MPXX_INIT_2(I)
-#define MPXX_INIT_3(I) = I
-
-#define MPXX_INIT(SIZE) MPXX_INIT_ ## SIZE
-
 #define MPXX_FIELD_STRUCT(TYPE, NAME, INIT) \
 template <typename Type> \
 struct TPL_CAT(NAME, _field) \
@@ -66,36 +61,24 @@ struct TPL_CAT(NAME, _field) \
     { return NAME; } \
 };
 
-#define MPXX_FIELD(T, ARG) \
+#define MPXX_INIT_2(I)
+#define MPXX_INIT_3(I) = I
+#define MPXX_INIT(SIZE) MPXX_INIT_ ## SIZE
+
+#define MPXX_COMMON_FIELD_0(NAME)
+#define MPXX_COMMON_FIELD_1(NAME)
+
+#define MPXX_FIELD(T, NAME) \
     MPXX_FIELD_STRUCT( \
         TPL_ELEMENT(T, 0), \
         TPL_ELEMENT(T, 1), \
         TPL_CAT(MPXX_INIT_, TPL_SIZE(T))(TPL_ELEMENT(T, 2)) \
-    )
-
-#define MPXX_DEFINE_FIELD(R, COMMON, FIELD) \
-    MPXX_DEFINE_FIELD_STRUCT( \
-        BOOST_PP_TUPLE_ELEM(3, 0, FIELD), \
-        BOOST_PP_TUPLE_ELEM(3, 1, FIELD), \
-        BOOST_PP_TUPLE_ELEM(3, 2, FIELD), \
     ) \
-    BOOST_PP_IF( \
-        COMMON, \
-        MPXX_DEFINE_COMMON_FIELD, \
-        BOOST_PP_TUPLE_EAT(2) \
-    )( \
-        BOOST_PP_TUPLE_ELEM(3, 0, FIELD), \
-        BOOST_PP_TUPLE_ELEM(3, 1, FIELD) \
-    )
+    TPL_CAT(MPXX_COMMON_FIELD_, TPL_SIZE_L(NAME))(NAME)
 
-#define MPXX_MAKE_FIELD(R, DATA, I, FIELD) \
-    BOOST_PP_COMMA_IF(I) \
-    BOOST_PP_CAT(BOOST_PP_TUPLE_ELEM(3, 1, FIELD), _field)<\
-        BOOST_PP_TUPLE_ELEM(3, 0, FIELD) \
+#define MPXX_FIELD_TYPE(T, ARG) \
+    TPL_CAT(TPL_ELEMENT(T, 1), _field)<\
+        TPL_ELEMENT(T, 0) \
     >
-
-#define MPXX_MAKE_EXT_FIELD(R, DATA, I, FIELD) \
-    BOOST_PP_COMMA_IF(I) \
-    BOOST_PP_CAT(BOOST_PP_EXPAND FIELD, _field_type)
 
 #endif // __MPXX_MACROS_FIELD_H__
