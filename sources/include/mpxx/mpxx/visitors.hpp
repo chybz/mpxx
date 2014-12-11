@@ -19,6 +19,8 @@ struct value_visit {};
 struct pos_visit {};
 /// Visit by field value and position
 struct value_pos_visit {};
+/// Visit by field and position
+struct field_pos_visit {};
 
 template <
     std::size_t Count,

@@ -327,6 +327,14 @@ private:
     template <std::size_t I, typename F>
     void operator()(F&& f, value_pos_visit tag) const
     { f(std::tuple_element<I, fields_tuple>::type::value(), I); }
+
+    template <std::size_t I, typename F>
+    void operator()(F&& f, field_pos_visit tag)
+    { f(static_cast<typename std::tuple_element<I, fields_tuple>::type&>(*this), I); }
+
+    template <std::size_t I, typename F>
+    void operator()(F&& f, field_pos_visit tag) const
+    { f(static_cast<typename std::tuple_element<I, fields_tuple>::type const &>(*this) ,I); }
 };
 
 template <

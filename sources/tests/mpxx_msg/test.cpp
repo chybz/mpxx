@@ -2,6 +2,7 @@
 
 #include <string>
 #include <sstream>
+#include <type_traits>
 
 #include <mpxx/unit_test.hpp>
 #include <mpxx/mpxx.hpp>
@@ -31,6 +32,13 @@ MPXX_STRUCT(
     mstruct1,
     (fields::valid),
     (fields::avg)
+);
+
+MPXX_STRUCT(
+    mstruct4,
+    (fields::valid),
+    (fields::avg),
+	(fields::label)
 );
 
 namespace structs {
@@ -89,6 +97,22 @@ struct value_visitor
     }
 };
 
+struct field_visitor
+{
+	template<typename T>
+	void operator() (T& v, std::size_t i)
+	{
+		std::string label = v.name();
+		if (i == 2) {
+			BOOST_CHECK_MESSAGE(
+				label == "label",
+				"Check label name from pos"
+			);
+		}
+		//std::cout << v.name() << " = " << v.value() << std::endl;
+	}
+};
+
 BOOST_AUTO_TEST_CASE(mpxx_mstruct)
 {
     mstruct1 m(false, 42.42);
@@ -140,6 +164,12 @@ BOOST_AUTO_TEST_CASE(mpxx_mstruct)
         m.valid == true && m.avg == 56.23,
         "mstruct move assign"
     );
+}
+
+BOOST_AUTO_TEST_CASE(mstruct_check_foreach_field)
+{
+	mstruct4 m(true, 0.0, "toto");
+	m.for_each<mpxx::field_pos_visit>(field_visitor());
 }
 
 BOOST_AUTO_TEST_CASE(mpxx_msg)
