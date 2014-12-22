@@ -48,7 +48,7 @@ struct mstruct : mstruct_base, Fields...
     { *this = other; }
 
     /// Constructor using pack of field value types (POD types, ...)
-    constexpr mstruct(typename Fields::type&&... v)
+    mstruct(typename Fields::type&&... v)
     : Fields{std::forward<typename Fields::type>(v)}...
     {}
 

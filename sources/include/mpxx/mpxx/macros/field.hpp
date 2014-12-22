@@ -37,7 +37,7 @@
 //
 #define MPXX_FIELD_DEFV_0(I) \
     throw std::runtime_error("no default value"); \
-    return *((type*) 0);
+    return *((type*) nullptr);
 #define MPXX_FIELD_DEFV_1(I) return I;
 
 #define MPXX_FIELD_DEFV(INIT) \
@@ -52,11 +52,10 @@
 // INIT : optional field default value
 //
 #define MPXX_FIELD_STRUCT(T, TYPE, NAME, INIT) \
-template <typename Type> \
 struct MPXX_FIELD_NAME(TPL_TO_LIST(T)) \
 { \
     typedef MPXX_FIELD_NAME(TPL_TO_LIST(T)) this_type; \
-    typedef Type type; \
+    typedef TYPE type; \
     \
     struct TPL_CAT(NAME, _tag_type) : mpxx::tag_base {}; \
     \
@@ -65,7 +64,7 @@ struct MPXX_FIELD_NAME(TPL_TO_LIST(T)) \
     const tag_type TPL_CAT(NAME, _tag) = {}; \
     type NAME MPXX_FIELD_INIT(INIT); \
     \
-    constexpr MPXX_FIELD_NAME(TPL_TO_LIST(T))() \
+    MPXX_FIELD_NAME(TPL_TO_LIST(T))() \
     {} \
     \
     MPXX_FIELD_NAME(TPL_TO_LIST(T))(const this_type& other) \
@@ -76,7 +75,7 @@ struct MPXX_FIELD_NAME(TPL_TO_LIST(T)) \
     : NAME(std::move(other.NAME)) \
     {} \
     \
-    constexpr MPXX_FIELD_NAME(TPL_TO_LIST(T))(type&& v) \
+    MPXX_FIELD_NAME(TPL_TO_LIST(T))(type&& v) \
     : NAME{std::forward<type>(v)} \
     {} \
     \
@@ -102,7 +101,7 @@ struct MPXX_FIELD_NAME(TPL_TO_LIST(T)) \
     { return NAME; } \
     \
     type&& value() && \
-    { return NAME; } \
+    { return std::move(NAME); } \
     \
     const type& default_value() const& \
     { MPXX_FIELD_DEFV(INIT) } \
@@ -149,20 +148,13 @@ typedef \
         TPL_ELEMENT(T, 0), \
         TPL_ELEMENT(T, 1), \
         TPL_ELEMENT(T, 2) \
-    ) \
-    MPXX_COMMON_FIELD( \
-        TPL_ELEMENT(T, 0), \
-        TPL_ELEMENT(T, 1), \
-        COMMON \
     )
 
 //
 // Field type when declaring a struct or message
 //
 #define MPXX_FIELD_TYPE(T, CLASS) \
-    MPXX_FIELD_NAME(CLASS, TPL_ELEMENT(T, 1))< \
-        TPL_ELEMENT(T, 0) \
-    >
+    MPXX_FIELD_NAME(CLASS, TPL_ELEMENT(T, 1))
 
 //
 // struct or message field definition
@@ -180,7 +172,7 @@ typedef \
 // struct or message field type
 //
 #define MPXX_STRUCT_FIELD_TYPE_1(T, NAME) \
-    TPL_CAT(TPL_ELEMENT(T, 0), _field_type)
+    TPL_CAT(TPL_ELEMENT(T, 0), _field)
 #define MPXX_STRUCT_FIELD_TYPE_2(T, NAME) \
     MPXX_FIELD_TYPE(T, NAME)
 #define MPXX_STRUCT_FIELD_TYPE_3(T, NAME) \

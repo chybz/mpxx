@@ -98,13 +98,13 @@
 
 /**
  * @internal
- * @brief Get the 65-th element of a list.
+ * @brief Get the 257-th element of a list.
  *
  * @param ... The list.
  *
- * @return The 65-th element of the list.
+ * @return The 257-th element of the list.
  */
-#define TPL_ELEMENT_65_L(                                                  \
+#define TPL_ELEMENT_257_L(                                                 \
   x01, x02, x03, x04, x05, x06, x07, x08,                                  \
   x09, x10, x11, x12, x13, x14, x15, x16,                                  \
   x17, x18, x19, x20, x21, x22, x23, x24,                                  \
@@ -113,7 +113,34 @@
   x41, x42, x43, x44, x45, x46, x47, x48,                                  \
   x49, x50, x51, x52, x53, x54, x55, x56,                                  \
   x57, x58, x59, x60, x61, x62, x63, x64,                                  \
-  x65, ...) x65
+  x65, x66, x67, x68, x69, x70, x71, x72,                                  \
+  x73, x74, x75, x76, x77, x78, x79, x80,                                  \
+  x81, x82, x83, x84, x85, x86, x87, x88,                                  \
+  x89, x90, x91, x92, x93, x94, x95, x96,                                  \
+  x97, x98, x99, x100, x101, x102, x103,                                   \
+  x104, x105, x106, x107, x108, x109, x110,                                \
+  x111, x112, x113, x114, x115, x116, x117,                                \
+  x118, x119, x120, x121, x122, x123, x124,                                \
+  x125, x126, x127, x128, x129, x130, x131,                                \
+  x132, x133, x134, x135, x136, x137, x138,                                \
+  x139, x140, x141, x142, x143, x144, x145,                                \
+  x146, x147, x148, x149, x150, x151, x152,                                \
+  x153, x154, x155, x156, x157, x158, x159,                                \
+  x160, x161, x162, x163, x164, x165, x166,                                \
+  x167, x168, x169, x170, x171, x172, x173,                                \
+  x174, x175, x176, x177, x178, x179, x180,                                \
+  x181, x182, x183, x184, x185, x186, x187,                                \
+  x188, x189, x190, x191, x192, x193, x194,                                \
+  x195, x196, x197, x198, x199, x200, x201,                                \
+  x202, x203, x204, x205, x206, x207, x208,                                \
+  x209, x210, x211, x212, x213, x214, x215,                                \
+  x216, x217, x218, x219, x220, x221, x222,                                \
+  x223, x224, x225, x226, x227, x228, x229,                                \
+  x230, x231, x232, x233, x234, x235, x236,                                \
+  x237, x238, x239, x240, x241, x242, x243,                                \
+  x244, x245, x246, x247, x248, x249, x250,                                \
+  x251, x252, x253, x254, x255, x256,                                      \
+  x257, ...) x257
 
 /**
  * @internal
@@ -128,9 +155,21 @@
   1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,                          \
   1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,                          \
   1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,                          \
+  1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,                          \
+  1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,                          \
+  1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,                          \
+  1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,                          \
+  1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,                          \
+  1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,                          \
+  1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,                          \
+  1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,                          \
+  1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,                          \
+  1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,                          \
+  1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,                          \
+  1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,                          \
   1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0))
 
-#define TPL_HAS_COMMA_L_A(t) TPL_ID(TPL_ELEMENT_65_L t)
+#define TPL_HAS_COMMA_L_A(t) TPL_ID(TPL_ELEMENT_257_L t)
 
 /**
  * @internal
@@ -194,21 +233,33 @@
 #define TPL_SIZE_L_C1(...) 0
 
 // Size of non empty tuple. Let n the number of argumenst and consider an
-// augumented list starting with __VA_ARGS__ followed by 64, 63, ..., 1. If
-// n = 64, then the 65-th element of the augumented list is 64. If n = 63,
-// then the 65-th element of the augumented  list is 63. In general, if
-// n <= 64 then the 65-th element of the list is n. (If n > 64, then the
-// 65-th element of the augumented list is the 65-th element of the original
+// augumented list starting with __VA_ARGS__ followed by 256, 255, ..., 1. If
+// n = 256, then the 257-th element of the augumented list is 256. If n = 255,
+// then the 257-th element of the augumented  list is 255. In general, if
+// n <= 256 then the 257-th element of the list is n. (If n > 256, then the
+// 257-th element of the augumented list is the 257-th element of the original
 // list and not its size.) The extra pair of parenthesis below is a
 // workaround for MSVC because otherwise, it sees __VA_ARGS__ as a single
 // token.
-#define TPL_SIZE_L_C0(...) TPL_SIZE_L_D((__VA_ARGS__, 64, 63, 62, 61, 60,  \
-  59, 58, 57, 56, 55, 54, 53, 52, 51, 50, 49, 48, 47, 46, 45, 44, 43, 42,  \
-  41, 40, 39, 38, 37, 36, 35, 34, 33, 32, 31, 30, 29, 28, 27, 26, 25, 24,  \
-  23, 22, 21, 20, 19, 18, 17, 16, 15, 14, 13, 12, 11, 10,  9,  8,  7,  6,  \
-   5,  4,  3,  2,  1))
+#define TPL_SIZE_L_C0(...) TPL_SIZE_L_D((__VA_ARGS__, \
+  256, 255, 254, 253, 252, 251, 250, 249, 248, 247, 246, 245, 244, 243, 242,  \
+  241, 240, 239, 238, 237, 236, 235, 234, 233, 232, 231, 230, 229, 228, 227,  \
+  226, 225, 224, 223, 222, 221, 220, 219, 218, 217, 216, 215, 214, 213, 212,  \
+  211, 210, 209, 208, 207, 206, 205, 204, 203, 202, 201, 200, 199, 198, 197,  \
+  196, 195, 194, 193, 192, 191, 190, 189, 188, 187, 186, 185, 184, 183, 182,  \
+  181, 180, 179, 178, 177, 176, 175, 174, 173, 172, 171, 170, 169, 168, 167,  \
+  166, 165, 164, 163, 162, 161, 160, 159, 158, 157, 156, 155, 154, 153, 152,  \
+  151, 150, 149, 148, 147, 146, 145, 144, 143, 142, 141, 140, 139, 138, 137,  \
+  136, 135, 134, 133, 132, 131, 130, 129, 128, 127, 126, 125, 124, 123, 122,  \
+  121, 120, 119, 118, 117, 116, 115, 114, 113, 112, 111, 110, 109, 108, 107,  \
+  106, 105, 104, 103, 102, 101, 100, 99, 98, 97, 96, 95, 94, 93, 92, 91, 90,  \
+  89, 88, 87, 86, 85, 84, 83, 82, 81, 80, 79, 78, 77, 76, 75, 74, 73, 72, 71, \
+  70, 69, 68, 67, 66, 65, 64, 63, 62, 61, 60, 59, 58, 57, 56, 55, 54, 53, 52, \
+  51, 50, 49, 48, 47, 46, 45, 44, 43, 42, 41, 40, 39, 38, 37, 36, 35, 34, 33, \
+  32, 31, 30, 29, 28, 27, 26, 25, 24, 23, 22, 21, 20, 19, 18, 17, 16, 15, 14, \
+  13, 12, 11, 10,  9,  8,  7,  6,  5,  4,  3,  2,  1))
 
-#define TPL_SIZE_L_D(t) TPL_ID(TPL_ELEMENT_65_L t)
+#define TPL_SIZE_L_D(t) TPL_ID(TPL_ELEMENT_257_L t)
 
 // The original idea was taken from [1]. It was also suggested in [1] to add
 // an extra level of indirection while concatenating TPL_SIZE_L's result

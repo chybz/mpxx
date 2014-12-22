@@ -103,12 +103,14 @@ struct field_visitor
 	void operator() (T& v, std::size_t i)
 	{
 		std::string label = v.name();
+
 		if (i == 2) {
 			BOOST_CHECK_MESSAGE(
 				label == "label",
 				"Check label name from pos"
 			);
 		}
+
 		//std::cout << v.name() << " = " << v.value() << std::endl;
 	}
 };
@@ -197,7 +199,7 @@ BOOST_AUTO_TEST_CASE(mpxx_msg)
 
     m.for_each(value_visitor());
 
-    // Assign message vaules via a tuple
+    // Assign message values via a tuple
     m = std::make_tuple(84, "foo");
 
     BOOST_CHECK_MESSAGE(
