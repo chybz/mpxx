@@ -254,14 +254,8 @@ MPXX_MSG(
     (int, i242, 242),
     (int, i243, 243),
     (int, i244, 244),
-    (int, i245, 245),
-    (int, i246, 246),
-    (int, i247, 247),
-    (int, i248, 248),
-    (int, i249, 249),
-    (int, i250, 250),
-    (int, i251, 251),
-    (int, i252, 252)
+    (int, i245, 245)
+    // limit with -ftemplate-depth=256
 );
 
 BOOST_AUTO_TEST_CASE(mpxx_big_msg_pack_unpack)
@@ -269,7 +263,7 @@ BOOST_AUTO_TEST_CASE(mpxx_big_msg_pack_unpack)
     big_message m;
 
     BOOST_CHECK_MESSAGE(
-        m.i10 == 10 && m.i251 == 251,
+        m.i10 == 10 && m.i245 == 245,
         "default values"
     );
 
@@ -284,7 +278,7 @@ BOOST_AUTO_TEST_CASE(mpxx_big_msg_pack_unpack)
     obj.convert(&rm);
 
     BOOST_CHECK_MESSAGE(
-        rm.i10 == 10 && rm.i251 == 251,
+        rm.i10 == 10 && rm.i245 == 245,
         "default values"
     );
 

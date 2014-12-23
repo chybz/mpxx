@@ -52,6 +52,22 @@ struct mstruct : mstruct_base, Fields...
     : Fields{std::forward<typename Fields::type>(v)}...
     {}
 
+    /// Get a value by field index
+    ///
+    /// @tparam I field index
+    template <std::size_t I>
+    typename std::tuple_element<I, values_tuple>::type&
+    get()
+    { return std::tuple_element<I, fields_tuple>::type::value(); }
+
+    /// Get a value by field index
+    ///
+    /// @tparam I field index
+    template <std::size_t I>
+    const typename std::tuple_element<I, values_tuple>::type&
+    get() const
+    { return std::tuple_element<I, fields_tuple>::type::value(); }
+
     /// Sets values for all shared fields between this struct
     /// and other.
     /// Common fields are determined by common tag types.
@@ -95,11 +111,14 @@ struct mstruct : mstruct_base, Fields...
     /// Compares two messages
     bool operator==(const this_type& other) const
     {
-        return
-            (*this)(typename Fields::tag_type()...)
-            ==
-            other(typename Fields::tag_type()...)
-            ;
+        std::size_t count = 0;
+
+        visit_each<this_type const, values_tuple>(
+            std::forward<this_type const>(*this),
+            count, other
+        );
+
+        return (count == field_count);
     }
 
     /// Compares two messages
@@ -120,12 +139,7 @@ struct mstruct : mstruct_base, Fields...
     /// std::get<0>(t) = a_value;
     /// std::cout << std::get<0>(t) << std::endl;
     /// @endcode
-    template <
-        typename... Tags,
-        typename Enable = typename std::enable_if<
-            mpxx::all_base_of<mpxx::tag_base, Tags...>::value
-        >::type
-    >
+    template <typename... Tags>
     std::tuple<
         typename mpxx::tuple_element<
             Tags,
@@ -157,12 +171,7 @@ struct mstruct : mstruct_base, Fields...
     ///
     /// std::cout << std::get<0>(t) << std::endl;
     /// @endcode
-    template <
-        typename... Tags,
-        typename Enable = typename std::enable_if<
-            mpxx::all_base_of<mpxx::tag_base, Tags...>::value
-        >::type
-    >
+    template <typename... Tags>
     std::tuple<
         const typename mpxx::tuple_element<
             Tags,
@@ -335,6 +344,10 @@ private:
     template <std::size_t I, typename F>
     void operator()(F&& f, field_pos_visit tag) const
     { f(static_cast<typename std::tuple_element<I, fields_tuple>::type const &>(*this) ,I); }
+
+    template <std::size_t I>
+    void operator()(std::size_t& count, const this_type& other) const
+    { count += (*this).get<I>() == other.get<I>(); }
 };
 
 template <

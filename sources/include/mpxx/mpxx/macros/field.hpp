@@ -35,13 +35,18 @@
 // MPXX_FIELD_DEFV() -->
 // MPXX_FIELD_DEFV(expr) --> expr
 //
-#define MPXX_FIELD_DEFV_0(I) \
-    throw std::runtime_error("no default value"); \
-    return *((type*) nullptr);
-#define MPXX_FIELD_DEFV_1(I) return I;
+#define MPXX_FIELD_DEFV_0(NAME) \
+    type default_value() const \
+    { \
+        throw std::runtime_error("no default value"); \
+        return TPL_CAT(NAME, _default); \
+    }
+#define MPXX_FIELD_DEFV_1(NAME) \
+    const type& default_value() const& \
+    { return TPL_CAT(NAME, _default); }
 
-#define MPXX_FIELD_DEFV(INIT) \
-    TPL_CAT(MPXX_FIELD_DEFV_, TPL_SIZE_L(INIT))(INIT)
+#define MPXX_FIELD_DEFV(NAME, INIT) \
+    TPL_CAT(MPXX_FIELD_DEFV_, TPL_SIZE_L(INIT))(NAME)
 
 //
 // Field struct definition
@@ -63,6 +68,7 @@ struct MPXX_FIELD_NAME(TPL_TO_LIST(T)) \
     \
     const tag_type TPL_CAT(NAME, _tag) = {}; \
     type NAME MPXX_FIELD_INIT(INIT); \
+    type TPL_CAT(NAME, _default) MPXX_FIELD_INIT(INIT); \
     \
     MPXX_FIELD_NAME(TPL_TO_LIST(T))() \
     {} \
@@ -103,8 +109,7 @@ struct MPXX_FIELD_NAME(TPL_TO_LIST(T)) \
     type&& value() && \
     { return std::move(NAME); } \
     \
-    const type& default_value() const& \
-    { MPXX_FIELD_DEFV(INIT) } \
+    MPXX_FIELD_DEFV(NAME, INIT) \
 };
 
 //
