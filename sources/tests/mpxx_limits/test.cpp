@@ -7,6 +7,9 @@
 #include <mpxx/unit_test.hpp>
 #include <mpxx/mpxx.hpp>
 
+// limit with -ftemplate-depth=256
+// Clang : 242
+// GCC   : 245
 MPXX_MSG(
     big_message,
     (int, i0, 0),
@@ -251,11 +254,7 @@ MPXX_MSG(
     (int, i239, 239),
     (int, i240, 240),
     (int, i241, 241),
-    (int, i242, 242),
-    (int, i243, 243),
-    (int, i244, 244),
-    (int, i245, 245)
-    // limit with -ftemplate-depth=256
+    (int, i242, 242)
 );
 
 BOOST_AUTO_TEST_CASE(mpxx_big_msg_pack_unpack)
@@ -263,7 +262,7 @@ BOOST_AUTO_TEST_CASE(mpxx_big_msg_pack_unpack)
     big_message m;
 
     BOOST_CHECK_MESSAGE(
-        m.i10 == 10 && m.i245 == 245,
+        m.i10 == 10 && m.i242 == 242,
         "default values"
     );
 
@@ -278,7 +277,7 @@ BOOST_AUTO_TEST_CASE(mpxx_big_msg_pack_unpack)
     obj.convert(&rm);
 
     BOOST_CHECK_MESSAGE(
-        rm.i10 == 10 && rm.i245 == 245,
+        rm.i10 == 10 && rm.i242 == 242,
         "default values"
     );
 

@@ -347,7 +347,7 @@ private:
 
     template <std::size_t I>
     void operator()(std::size_t& count, const this_type& other) const
-    { count += (*this).get<I>() == other.get<I>(); }
+    { count += (*this).template get<I>() == other.get<I>(); }
 };
 
 template <
