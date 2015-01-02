@@ -8,8 +8,8 @@
 #include <mpxx/mpxx.hpp>
 
 // limit with -ftemplate-depth=256
-// Clang : 242
-// GCC   : 245
+// Clang : 241
+// GCC   : 244
 MPXX_MSG(
     big_message,
     (int, i0, 0),
@@ -253,8 +253,7 @@ MPXX_MSG(
     (int, i238, 238),
     (int, i239, 239),
     (int, i240, 240),
-    (int, i241, 241),
-    (int, i242, 242)
+    (int, i241, 241)
 );
 
 BOOST_AUTO_TEST_CASE(mpxx_big_msg_pack_unpack)
@@ -262,7 +261,7 @@ BOOST_AUTO_TEST_CASE(mpxx_big_msg_pack_unpack)
     big_message m;
 
     BOOST_CHECK_MESSAGE(
-        m.i10 == 10 && m.i242 == 242,
+        m.i10 == 10 && m.i241 == 241,
         "default values"
     );
 
@@ -277,7 +276,7 @@ BOOST_AUTO_TEST_CASE(mpxx_big_msg_pack_unpack)
     obj.convert(&rm);
 
     BOOST_CHECK_MESSAGE(
-        rm.i10 == 10 && rm.i242 == 242,
+        rm.i10 == 10 && rm.i241 == 241,
         "default values"
     );
 

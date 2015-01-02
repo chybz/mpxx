@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <cstddef>
+#include <type_traits>
 
 #include <mpxx/msgpack.hpp>
 
@@ -34,7 +35,21 @@ struct pack_visitor
 
     template <typename T>
     void operator()(T& v)
+    {
+        typename std::is_enum<T>::type tag;
+        (*this)(v, tag);
+    }
+
+    template <typename T>
+    void operator()(T& v, const std::false_type& tag)
     { p_.pack(v); }
+
+    template <typename T>
+    void operator()(T& v, const std::true_type& tag)
+    {
+        using type = typename std::underlying_type<T>::type;
+        p_.pack(static_cast<type>(v));
+    }
 
     Packer& p_;
 };
@@ -59,7 +74,22 @@ struct unpack_visitor
             return;
         }
 
-        o_.via.array.ptr[pos].convert(&v);
+        typename std::is_enum<T>::type tag;
+        (*this)(v, pos, tag);
+    }
+
+    template <typename T>
+    void operator()(T& v, std::size_t pos, const std::false_type& tag)
+    { o_.via.array.ptr[pos].convert(&v); }
+
+    template <typename T>
+    void operator()(T& v, std::size_t pos, const std::true_type& tag)
+    {
+        using type = typename std::underlying_type<T>::type;
+        type tv;
+        o_.via.array.ptr[pos].convert(&tv);
+
+        v = static_cast<T>(tv);
     }
 
     msgpack::object& o_;
