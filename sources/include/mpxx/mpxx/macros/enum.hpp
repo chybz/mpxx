@@ -39,6 +39,8 @@ operator>>(object const& o, ENUM& v)                                          \
                                                                               \
     o.convert(&uv);                                                           \
     v = static_cast<ENUM>(uv);                                                \
+                                                                              \
+    return v;                                                                 \
 }                                                                             \
                                                                               \
 template <typename Stream>                                                    \
@@ -46,7 +48,7 @@ inline                                                                        \
 packer<Stream>&                                                               \
 operator<<(packer<Stream>& o, const ENUM& v)                                  \
 {                                                                             \
-    using utype = typename std::underlying_type<T>::type;                     \
+    using utype = typename std::underlying_type<ENUM>::type;                  \
                                                                               \
     o.pack(static_cast<utype>(v));                                            \
                                                                               \
