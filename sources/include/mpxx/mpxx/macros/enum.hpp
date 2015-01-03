@@ -51,8 +51,8 @@ operator<<(packer<Stream>& o, const ENUM& v)                                  \
     o.pack(static_cast<utype>(v));                                            \
                                                                               \
     return o;                                                                 \
-}
-
+}                                                                             \
+                                                                              \
 } // namespace msgpack
 
 #endif // __MPXX_MACROS_ENUM_H__
