@@ -4,6 +4,7 @@
 #include <mpxx/tpl/tpl.hpp>
 #include <mpxx/macros/fields.hpp>
 #include <mpxx/macros/define_base.hpp>
+#include <mpxx/macros/enum.hpp>
 
 /// @file
 ///
