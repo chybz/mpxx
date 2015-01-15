@@ -14,7 +14,6 @@
 /// @hideinitializer
 /// @param NAME mstruct type name
 /// @param FIELDS a preprocessor sequence of field definitions
-/// @note There's no comma between field definitions
 /// @par Example
 /// @code
 /// MPXX_STRUCT(
@@ -34,7 +33,6 @@
 /// @hideinitializer
 /// @param NAME message type name
 /// @param FIELDS a preprocessor sequence of field definitions
-/// @note There's no comma between field definitions
 /// @par Example
 /// @code
 /// MPXX_MSG(
