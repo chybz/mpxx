@@ -187,7 +187,8 @@ struct intersect_type_seq<std::tuple<T, Ts...>, std::tuple<Us...>>
 };
 
 template <typename... Ts>
-struct all_of;
+struct all_of : std::integral_constant<bool, false>
+{};
 
 template <typename T>
 struct all_of<T> : std::integral_constant<bool, T::value>

@@ -313,6 +313,17 @@ private:
         ) = other(Tags()...);
     }
 
+    template <
+        typename... Tags,
+        template <typename...> class Other,
+        typename... OtherFields
+    >
+    void update(
+        const std::tuple<>& tags,
+        const Other<OtherFields...>& other
+    )
+    {}
+
     template <std::size_t... Indices>
     void update(const mpxx::tuple_indices<Indices...> , values_tuple&& vt)
     { std::tie(Fields::value()...) = vt; }

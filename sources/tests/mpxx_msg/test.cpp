@@ -27,7 +27,7 @@ MPXX_FIELDS(
 
 } // namespace fields
 
-// Defiene a struct using predefined field types
+// Define a struct using predefined field types
 MPXX_STRUCT(
     mstruct1,
     (fields::valid),
@@ -315,5 +315,21 @@ BOOST_AUTO_TEST_CASE(mpxx_msg_intersect)
     BOOST_CHECK_MESSAGE(
         m3.counter == 4567 && m3.label == "a name",
         "other fields untouched"
+    );
+}
+
+BOOST_AUTO_TEST_CASE(mpxx_msg_no_intersect)
+{
+    msg_type m(42, "a message");
+    msg1 m1(true, 42.42);
+
+    m = m1;
+
+    BOOST_CHECK_MESSAGE(
+        m.id == 42 && m.str == "a message"
+        &&
+        m1.valid == true && m1.avg == 42.42
+        ,
+        "no common fields"
     );
 }
