@@ -18,7 +18,11 @@ namespace mpxx {
 
 /// Base tag for field tags
 struct tag_base {};
-struct mstruct_base {};
+
+struct mstruct_base
+{
+    virtual void dump(std::ostream& os) const = 0;
+};
 
 /// Self-aware struct-like type (see <a href="http://duriansoftware.com/joe/Self-aware-struct-like-types-in-C++11.html">Self-aware struct-like types in C++11</a>).
 ///
@@ -288,6 +292,14 @@ struct mstruct : mstruct_base, Fields...
         );
     }
 
+    virtual
+    void dump(std::ostream& os) const
+    {
+        for_each<value_pos_visit>(
+            print_visitor<field_count>(os)
+        );
+    }
+
 private:
     friend mpxx::access;
 
@@ -378,6 +390,15 @@ struct value_type
         typename MStruct::tags_tuple
     >::type type;
 };
+
+inline
+std::ostream&
+operator<<(std::ostream& os, const mstruct_base& m)
+{
+    m.dump(os);
+
+    return os;
+}
 
 } // namespace mpxx
 

@@ -59,24 +59,7 @@ struct msg : mstruct<Fields...>
             object_visitor<base_type::field_count>(o, z)
         );
     }
-
-    void dump(std::ostream& os) const
-    {
-        base_type::template for_each<value_pos_visit>(
-            print_visitor<base_type::field_count>(os)
-        );
-    }
 };
-
-template <typename... Args>
-inline
-std::ostream&
-operator<<(std::ostream& os, const msg<Args...>& m)
-{
-    m.dump(os);
-
-    return os;
-}
 
 } // namespace mpxx
 
