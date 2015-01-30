@@ -16,7 +16,7 @@ struct decoder_type
     using type = typename std::add_pointer<
         void(Handler&, const nnxx::message&)
     >::type;
-}
+};
 
 template <typename Handler, typename Message>
 auto make_decoder()

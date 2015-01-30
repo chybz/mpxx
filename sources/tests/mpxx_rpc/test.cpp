@@ -18,6 +18,7 @@ BOOST_AUTO_TEST_CASE(mpxx_rpc_protocol)
     handler h;
 
     mpxx::rpc::protocol<
+        42,
         handler,
         float, std::vector<std::string>
     > proto(h);

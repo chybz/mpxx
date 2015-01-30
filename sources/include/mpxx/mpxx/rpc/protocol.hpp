@@ -19,26 +19,44 @@
 namespace mpxx {
 namespace rpc {
 
+struct make_type_map
+{
+    using map_type = std::unordered_map<std::type_index, std::size_t>;
+
+    template <
+        typename... Messages,
+        std::size_t... Indices
+    >
+    static
+    void
+    make(map_type& map, std::index_sequence<Indices...>)
+    {
+        map = {
+            {
+                std::type_index(typeid(Messages)),
+                Indices
+            }...
+        };
+    }
+};
+
 template <uint8_t Id, typename Handler, typename... Messages>
 class protocol
 {
 public:
-    typename Indices = std::make_index_sequence<N>
+    using Indices = std::make_index_sequence<sizeof...(Messages)>;
+
     protocol(Handler& h)
     : h_(h),
-    type_map_{
-        {
-            std::type_index(typeid(Messages)),
-            typeid(Messages).name()
-        }...
-    },
     decoder_map_{
         {
             std::type_index(typeid(Messages)),
             make_decoder<Handler, Messages>()
         }...
     }
-    {}
+    {
+        make_type_map::make<Messages...>(type_map_, Indices());
+    }
 
     virtual ~protocol()
     {}
@@ -64,7 +82,7 @@ public:
     }
 
 private:
-    using msg_type_map = std::unordered_map<std::type_index, std::string>;
+    using msg_type_map = std::unordered_map<std::type_index, std::size_t>;
     using msg_decoder_map = std::unordered_map<
         std::type_index,
         typename decoder_type<Handler>::type
