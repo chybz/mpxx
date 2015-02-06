@@ -127,7 +127,23 @@ struct print_visitor
 
     template <typename T>
     void operator()(const T& v, std::size_t pos)
+    {
+        typename std::is_enum<T>::type tag;
+        (*this)(v, pos, tag);
+    }
+
+    template <typename T>
+    void operator()(const T& v, std::size_t pos, const std::false_type& tag)
     { os_ << (pos > 0 ? "," : "") << v; }
+
+    template <typename T>
+    void operator()(const T& v, std::size_t pos, const std::true_type& tag)
+    {
+        using type = typename std::underlying_type<T>::type;
+        auto ev = static_cast<type>(v);
+
+        (*this)(ev, pos, std::false_type());
+    }
 
     std::ostream& os_;
 };
