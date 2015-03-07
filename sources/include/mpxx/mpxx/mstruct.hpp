@@ -1,6 +1,7 @@
 #ifndef __MPXX_MSTRUCT_H__
 #define __MPXX_MSTRUCT_H__
 
+#include <string>
 #include <iostream>
 #include <tuple>
 #include <type_traits>
@@ -300,6 +301,17 @@ struct mstruct : mstruct_base, Fields...
         );
     }
 
+    std::string describe() const
+    {
+        std::ostringstream oss;
+
+        for_each<name_value_pos_visit>(
+            describe_visitor<field_count>(oss)
+        );
+
+        return oss.str();
+    }
+
 private:
     friend mpxx::access;
 
@@ -367,6 +379,26 @@ private:
     template <std::size_t I, typename F>
     void operator()(F&& f, field_pos_visit tag) const
     { f(static_cast<typename std::tuple_element<I, fields_tuple>::type const &>(*this) ,I); }
+
+    template <std::size_t I, typename F>
+    void operator()(F&& f, name_value_pos_visit tag)
+    {
+        f(
+            std::tuple_element<I, fields_tuple>::type::name(),
+            std::tuple_element<I, fields_tuple>::type::value(),
+            I
+        );
+    }
+
+    template <std::size_t I, typename F>
+    void operator()(F&& f, name_value_pos_visit tag) const
+    {
+        f(
+            std::tuple_element<I, fields_tuple>::type::name(),
+            std::tuple_element<I, fields_tuple>::type::value(),
+            I
+        );
+    }
 
     template <std::size_t I>
     void operator()(std::size_t& count, const this_type& other) const

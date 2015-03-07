@@ -4,14 +4,20 @@
 #include <nnxx/message>
 #include <nnxx/socket>
 
+#include <mpxx/rpc/protocol.hpp>
+
 namespace mpxx {
 namespace rpc {
 
-template <typename Derived, typename Messages...>
+template <typename Derived, protocol_id Id, typename Messages...>
 class pipe
 {
 public:
-    pipe();
+    using protocol_type = protocol<Id, Derived, Messages...>;
+
+    pipe()
+    : protocol_(derived())
+    {}
 
     virtual ~pipe()
     {}
@@ -23,6 +29,7 @@ private:
     Derived const& derived() const
     { return *static_cast<Derived const*>(this); }
 
+    protocol_type protocol_;
     nnxx::socket in_ { nnxx::SP, nnxx::PULL };
     nnxx::socket out_ { nnxx::SP, nnxx::PUSH };
 };

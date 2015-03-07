@@ -179,6 +179,11 @@ BOOST_AUTO_TEST_CASE(mpxx_msg)
     msg_type m(42, "a message");
 
     BOOST_CHECK_MESSAGE(
+        m.describe() == "id:sint32,str:string",
+        "msg description"
+    );
+
+    BOOST_CHECK_MESSAGE(
         m.id == 42 && m.str == "a message",
         "msg access values by fields"
     );
