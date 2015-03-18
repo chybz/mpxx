@@ -3,6 +3,7 @@
 
 #include <string>
 #include <iostream>
+#include <sstream>
 #include <tuple>
 #include <type_traits>
 
@@ -194,6 +195,32 @@ struct mstruct : mstruct_base, Fields...
                     tags_tuple
                 >::type::value()
             )...
+        );
+    }
+
+    /// Obtain a tuple booleans telling if the fields looked up using the
+    /// specified Tags pack are at their default value
+    ///
+    /// @tparam Tags pack of tag types
+    /// @param t pack of tags
+    /// @returns tuple of booleans
+    ///
+    /// @par Example
+    /// @code
+    /// auto t = m.is_default(m.field1_tag, m.field5_tag);
+    ///
+    /// std::cout << std::get<0>(t) << std::endl;
+    /// @endcode
+    template <typename... Tags>
+    auto
+    is_default_value(const Tags&... t) const
+    {
+        return std::make_tuple(
+            mpxx::tuple_element<
+                Tags,
+                fields_tuple,
+                tags_tuple
+            >::type::is_default_value()...
         );
     }
 
