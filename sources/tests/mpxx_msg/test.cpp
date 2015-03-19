@@ -342,4 +342,9 @@ BOOST_AUTO_TEST_CASE(mpxx_msg_update_non_default)
     m2.str = "junk";
 
     m1 |= m2;
+
+    BOOST_CHECK_MESSAGE(
+        m1.id == 42 && m1.str == "junk",
+        "non-default update"
+    );
 }

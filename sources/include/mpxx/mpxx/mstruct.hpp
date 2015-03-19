@@ -353,11 +353,11 @@ private:
         const this_type& other
     )
     {
-        auto is_default_value = is_default_value(Tags()...);
+        auto is_default = other.is_default_value(Tags()...);
 
-        mpxx::visit_each<this_type, decltype(is_default_value)>(
+        mpxx::visit_each<this_type, decltype(is_default)>(
             std::forward<this_type>(*this),
-            is_default_value,
+            is_default,
             other,
             update_tag()
         );
@@ -437,11 +437,25 @@ private:
 
     template <std::size_t I, typename F>
     void operator()(F&& f, field_pos_visit tag)
-    { f(static_cast<typename std::tuple_element<I, fields_tuple>::type&>(*this), I); }
+    {
+        f(
+            static_cast<
+                typename std::tuple_element<I, fields_tuple>::type&
+            >(*this),
+            I
+        );
+    }
 
     template <std::size_t I, typename F>
     void operator()(F&& f, field_pos_visit tag) const
-    { f(static_cast<typename std::tuple_element<I, fields_tuple>::type const &>(*this) ,I); }
+    {
+        f(
+            static_cast<
+                typename std::tuple_element<I, fields_tuple>::type const &
+            >(*this),
+            I
+        );
+    }
 
     template <std::size_t I, typename F>
     void operator()(F&& f, name_value_pos_visit tag)
