@@ -114,6 +114,16 @@ struct mstruct : mstruct_base, Fields...
         return *this;
     }
 
+    /// Sets values from other when non-default
+    ///
+    /// @param other mstruct to update from
+    this_type& operator|=(const this_type& other)
+    {
+        update_non_default(tags_tuple(), other);
+
+        return *this;
+    }
+
     /// Compares two messages
     bool operator==(const this_type& other) const
     {
@@ -334,6 +344,39 @@ struct mstruct : mstruct_base, Fields...
 
 private:
     friend mpxx::access;
+
+    struct update_tag {};
+
+    template <typename... Tags>
+    void update_non_default(
+        const std::tuple<Tags...>& tags,
+        const this_type& other
+    )
+    {
+        auto is_default_value = is_default_value(Tags()...);
+
+        mpxx::visit_each<this_type, decltype(is_default_value)>(
+            std::forward<this_type>(*this),
+            is_default_value,
+            other,
+            update_tag()
+        );
+    }
+
+    template <
+        std::size_t I,
+        typename IsDefaultValues
+    >
+    void operator()(
+        const IsDefaultValues& is_default,
+        const this_type& other,
+        const update_tag& tag
+    )
+    {
+        if (!std::get<I>(is_default)) {
+            get<I>() = other.get<I>();
+        }
+    }
 
     template <
         typename... Tags,

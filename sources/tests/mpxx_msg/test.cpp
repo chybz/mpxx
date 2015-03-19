@@ -14,6 +14,13 @@ MPXX_MSG(
     (std::string, str)
 );
 
+// Standalone message with internal fields and default values
+MPXX_MSG(
+    msg_def_type,
+    (int, id, 0),
+    (std::string, str, "")
+);
+
 namespace fields {
 
 // Define some field types in a common namespace
@@ -324,4 +331,15 @@ BOOST_AUTO_TEST_CASE(mpxx_msg_no_intersect)
         ,
         "no common fields"
     );
+}
+
+BOOST_AUTO_TEST_CASE(mpxx_msg_update_non_default)
+{
+    msg_def_type m1;
+    m1.id = 42;
+
+    msg_def_type m2;
+    m2.str = "junk";
+
+    m1 |= m2;
 }
