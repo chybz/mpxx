@@ -123,36 +123,6 @@ struct object_visitor
 };
 
 template <std::size_t Count>
-struct print_visitor
-{
-    print_visitor(std::ostream& os)
-    : os_(os)
-    {}
-
-    template <typename T>
-    void operator()(const T& v, std::size_t pos)
-    {
-        typename std::is_enum<T>::type tag;
-        (*this)(v, pos, tag);
-    }
-
-    template <typename T>
-    void operator()(const T& v, std::size_t pos, const std::false_type& tag)
-    { os_ << (pos > 0 ? "," : "") << v; }
-
-    template <typename T>
-    void operator()(const T& v, std::size_t pos, const std::true_type& tag)
-    {
-        using type = typename std::underlying_type<T>::type;
-        auto ev = static_cast<type>(v);
-
-        (*this)(ev, pos, std::false_type());
-    }
-
-    std::ostream& os_;
-};
-
-template <std::size_t Count>
 struct describe_visitor
 {
     describe_visitor(std::ostream& os)

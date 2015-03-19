@@ -245,19 +245,6 @@ BOOST_AUTO_TEST_CASE(mpxx_msg_pack_unpack)
     );
 }
 
-BOOST_AUTO_TEST_CASE(mpxx_msg_dump)
-{
-    msg_type m(42, "a message");
-
-    std::ostringstream oss;
-    oss << m;
-
-    BOOST_CHECK_MESSAGE(
-        oss.str() == "42,a message",
-        "dump to stream"
-    );
-}
-
 BOOST_AUTO_TEST_CASE(mpxx_struct_intersect)
 {
     // Check various use cases
