@@ -327,8 +327,7 @@ BOOST_AUTO_TEST_CASE(mpxx_msg_no_intersect)
     BOOST_CHECK_MESSAGE(
         m.id == 42 && m.str == "a message"
         &&
-        m1.valid == true && m1.avg == 42.42
-        ,
+        m1.valid == true && m1.avg == 42.42,
         "no common fields"
     );
 }
