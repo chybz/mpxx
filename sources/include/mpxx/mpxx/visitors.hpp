@@ -108,7 +108,7 @@ struct object_visitor
     z_(z)
     {
         o_->type = msgpack::type::ARRAY;
-        o_->via.array.ptr = (msgpack::object*) z->malloc(
+        o_->via.array.ptr = (msgpack::object*) z->allocate_align(
             sizeof(msgpack::object) * Count
         );
         o_->via.array.size = Count;

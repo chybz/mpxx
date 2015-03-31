@@ -198,7 +198,7 @@ private:
     fwd_type_map fwd_types_;
     rev_type_map rev_types_;
     msgpack::sbuffer sbuf_;
-    msgpack::unpacker upk_{ 512 * 1024 };
+    msgpack::unpacker upk_;
     msgpack::unpacked result_;
 };
 
