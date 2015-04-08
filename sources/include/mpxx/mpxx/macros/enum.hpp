@@ -27,34 +27,6 @@
 ///
 /// MPXX_ADAPT_ENUM(some_ns::my_enum)
 /// @endcode
-#define MPXX_ADAPT_ENUM(ENUM)                                                 \
-namespace msgpack {                                                           \
-                                                                              \
-inline                                                                        \
-ENUM&                                                                         \
-operator>>(object const& o, ENUM& v)                                          \
-{                                                                             \
-    using utype = typename std::underlying_type<ENUM>::type;                  \
-    utype uv;                                                                 \
-                                                                              \
-    o.convert(&uv);                                                           \
-    v = static_cast<ENUM>(uv);                                                \
-                                                                              \
-    return v;                                                                 \
-}                                                                             \
-                                                                              \
-template <typename Stream>                                                    \
-inline                                                                        \
-packer<Stream>&                                                               \
-operator<<(packer<Stream>& o, const ENUM& v)                                  \
-{                                                                             \
-    using utype = typename std::underlying_type<ENUM>::type;                  \
-                                                                              \
-    o.pack(static_cast<utype>(v));                                            \
-                                                                              \
-    return o;                                                                 \
-}                                                                             \
-                                                                              \
-} // namespace msgpack
+#define MPXX_ADAPT_ENUM(ENUM) MSGPACK_ADD_ENUM(ENUM)
 
 #endif // __MPXX_MACROS_ENUM_H__
