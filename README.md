@@ -9,7 +9,6 @@ Requirements
 ============
 
 - C++11 compiler (tested with GCC 4.8.3 on Debian and Apple LLVM version 6.0 on OSX)
-- Boost.Preprocessor
 - MessagePack
 - [cpkg](https://github.com/chybz/cpkg.git) and [cbuild](https://github.com/chybz/cbuild.git) for building and packaging
 
