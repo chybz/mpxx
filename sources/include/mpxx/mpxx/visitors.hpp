@@ -61,7 +61,7 @@ struct pack_visitor
 template <std::size_t Count>
 struct unpack_visitor
 {
-    unpack_visitor(msgpack::object& o)
+    unpack_visitor(const msgpack::object& o)
     : o_(o)
     {
         if (o_.type != msgpack::type::ARRAY) {
@@ -93,10 +93,10 @@ struct unpack_visitor
         type tv;
         o_.via.array.ptr[pos].convert(&tv);
 
-        v = static_cast<T>(tv);
+        v = std::move(static_cast<T>(tv));
     }
 
-    msgpack::object& o_;
+    const msgpack::object& o_;
     std::size_t size_;
 };
 

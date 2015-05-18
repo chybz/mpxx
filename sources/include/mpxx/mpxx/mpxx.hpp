@@ -46,7 +46,7 @@ struct msg : mstruct<Fields...>
         );
     }
 
-    void msgpack_unpack(msgpack::object o)
+    void msgpack_unpack(msgpack::object const& o)
     {
         base_type::template for_each<value_pos_visit>(
             unpack_visitor<base_type::field_count>(o)
