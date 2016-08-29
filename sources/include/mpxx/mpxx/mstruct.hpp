@@ -124,6 +124,31 @@ struct mstruct : mstruct_base, Fields...
         return *this;
     }
 
+    /// Sets values for all shared fields between this struct
+    /// and other, when non-default.
+    /// Common fields are determined by common tag types.
+    ///
+    /// @tparam OtherFields type pack of other mstruct fields
+    /// @param other mstruct to update from
+    template <
+        template <typename...> class Other,
+        typename... OtherFields,
+        typename Enable = typename std::enable_if<
+            std::is_base_of<mpxx::mstruct_base, Other<OtherFields...>>::value
+        >::type
+    >
+    this_type& operator<<=(const Other<OtherFields...>& other)
+    {
+        typedef typename mpxx::intersect_type_seq<
+                tags_tuple,
+                typename Other<OtherFields...>::tags_tuple
+        >::type common_tags_tuple;
+
+        update_non_default(common_tags_tuple(), other);
+
+        return *this;
+    }
+
     /// Compares two messages
     bool operator==(const this_type& other) const
     {
@@ -361,6 +386,29 @@ private:
             other,
             update_tag()
         );
+    }
+
+    template <
+        typename... Tags,
+        template <typename...> class Other,
+        typename... OtherFields,
+        typename Enable = typename std::enable_if<
+            mpxx::all_base_of<mpxx::tag_base, Tags...>::value
+        >::type
+    >
+    void update_non_default(
+        const std::tuple<Tags...>& tags,
+        const Other<OtherFields...>& other
+    )
+    {
+        mpxx::for_each(tags, [this, &other](std::size_t, const auto& tag) {
+            const auto& other_tag = std::get<0>(other(tag));
+            const bool is_default = std::get<0>(other.is_default_value(tag));
+
+            if (!is_default) {
+                std::get<0>((*this)(tag)) = other_tag;
+            }
+        });
     }
 
     template <

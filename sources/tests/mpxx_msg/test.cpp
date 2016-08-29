@@ -32,6 +32,14 @@ MPXX_FIELDS(
     (double, avg)
 );
 
+// Define some fields with a default value
+MPXX_FIELDS(
+    (std::size_t, common1, 0),
+    (std::size_t, common2, 0),
+    (std::string, specific1, ""),
+    (std::string, specific2, "")
+)
+
 } // namespace fields
 
 // Define a struct using predefined field types
@@ -94,6 +102,21 @@ MPXX_MSG(
     (fields::avg),
     (fields::label)
 );
+
+// Define two different messages with some fields in common
+MPXX_MSG(
+    msg4,
+    (fields::common1),
+    (fields::common2),
+    (fields::specific1)
+)
+MPXX_MSG(
+    msg5,
+    (fields::common1),
+    (fields::common2),
+    (fields::specific2)
+)
+
 
 struct value_visitor
 {
@@ -345,5 +368,37 @@ BOOST_AUTO_TEST_CASE(mpxx_msg_update_non_default)
     BOOST_CHECK_MESSAGE(
         m1.id == 42 && m1.str == "junk",
         "non-default update"
+    );
+}
+
+BOOST_AUTO_TEST_CASE(mpxx_msg_update_non_default_on_different_types)
+{
+    msg4 m1;
+    m1.common1 = 1;
+    m1.common2 = 1;
+    m1.specific1 = "hello";
+
+    msg5 m2;
+    m2.common2 = 2;
+    m2.specific2 = "world";
+
+    m1 <<= m2;
+    BOOST_CHECK_MESSAGE(
+        m1.common1 == 1,
+        "Common field with default value is not updated"
+    );
+    BOOST_CHECK_MESSAGE(
+        m1.common2 == 2,
+        "Common field with non-default value is updated"
+    );
+    BOOST_CHECK_MESSAGE(
+        m1.specific1 == "hello",
+        "Specific field is untouched"
+    );
+    BOOST_CHECK_MESSAGE(
+        m2.specific2 == "world" &&
+        m2.common1 == 0 &&
+        m2.common2 == 2,
+        "Second messages is untouched"
     );
 }
